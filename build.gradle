@@ -1,0 +1,143 @@
+buildscript {
+    ext {
+        appName = 'cosmos-is-alive'
+        appVersion = '0.1'
+        
+        gdxVersion = '1.7.1'
+        artemisVersion = '1.2.1'
+        artemisContribVersion = '1.1.0'
+        //roboVMVersion = '1.9.0'
+        //box2DLightsVersion = '1.4'
+        aiVersion = '1.6.0'
+    }
+    
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.6'
+        //classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath "net.onedaybeard.artemis:artemis-odb-gradle-plugin:$artemisVersion"
+    }
+}
+
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    version = "$appVersion"
+
+    repositories {
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    }
+}
+
+project(":desktop") {
+    apply plugin: "java"
+
+
+    dependencies {
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        //compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
+        //compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+        //compile "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+    }
+}
+
+/*project(":android") {
+    apply plugin: "android"
+
+    configurations { natives }
+
+    dependencies {
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-android:$gdxVersion"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        //compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        //compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+    }
+}*/
+
+project(":html") {
+    apply plugin: "gwt"
+    apply plugin: "war"
+
+
+    dependencies {
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers-gwt:$gdxVersion:sources"
+		compile fileTree(dir: '../libs', include: '*.jar')
+        
+        // artemis-odb
+        compile "net.onedaybeard.artemis:artemis-odb-gwt:$artemisVersion"
+        compile "net.onedaybeard.artemis:artemis-odb-gwt:$artemisVersion:sources"
+        compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion:sources"
+        compile "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion:sources"
+        
+         // Artemis-odb bonus functionality (systems, events, components).
+        compile "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion:sources"
+        compile "net.mostlyoriginal.artemis-odb:contrib-eventbus:$artemisContribVersion:sources"
+        compile "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion:sources"
+    }
+}
+
+project(":core") {
+    apply plugin: "java"
+
+
+	configurations {
+        provided
+    }
+
+    sourceSets {
+        // run the annotation processor compile time.
+        main { compileClasspath += [configurations.provided] }
+    }
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
+        compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
+        
+        // .jar libs, like Universal Tween Engine
+        compile fileTree(dir: '../libs', include: '*.jar')
+
+        // artemis-odb
+        compile "net.onedaybeard.artemis:artemis-odb:$artemisVersion"
+        compile "net.onedaybeard.artemis:artemis-odb-serializer-json-libgdx:$artemisVersion"
+        
+        // artemis-odb annotation processor (see https://github.com/junkdog/artemis-odb/wiki/EntityFactory)
+        provided "net.onedaybeard.artemis:artemis-odb-processor:$artemisVersion"
+        
+        // artemis-odb-contrib
+        compile "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
+        compile "net.mostlyoriginal.artemis-odb:contrib-eventbus:$artemisContribVersion"
+        compile "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion"
+        
+        // Entity Tracker
+        //compile "net.namekdev.entity_tracker:artemis-entity-tracker:0.3.0"
+        //compile "net.namekdev.entity_tracker:artemis-entity-tracker-gui:0.3.0"
+    }
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}

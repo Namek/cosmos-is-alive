@@ -1,0 +1,16 @@
+package net.namekdev.cosmos_is_alive.system;
+
+import com.artemis.Entity;
+
+import net.mostlyoriginal.api.operation.common.Operation;
+
+public class SchedulerSystem extends net.mostlyoriginal.api.system.SchedulerSystem {
+	public void schedule(Operation operation) {
+		Entity e = world.createEntity();
+		mSchedule.create(e).operation.add(operation);
+	}
+	
+	public void schedule(Entity e, Operation operation) {
+		mSchedule.create(e).operation.add(operation);
+	}
+}
