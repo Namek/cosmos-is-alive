@@ -2,24 +2,47 @@ package net.namekdev.cosmos_is_alive.screen;
 
 import net.namekdev.cosmos_is_alive.Assets;
 import net.namekdev.cosmos_is_alive.MyNGame;
+import net.namekdev.cosmos_is_alive.util.DefaultShaderWatchableProvider;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.g3d.shaders.DefaultShader.Config;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public abstract class BaseScreen<T extends BaseScreen<T>> extends ScreenAdapter {
 	protected MyNGame game;
-	protected SpriteBatch batch;
+	protected Camera camera;
+	protected SpriteBatch sprites;
+	protected DecalBatch decals;
+	protected ModelBatch models;
 	protected ShapeRenderer shapes;
+	protected DefaultShaderWatchableProvider shaderProvider;
 	protected Assets assets;
 	
 	public T init(MyNGame game) {
 		this.game = game;
-		batch = new SpriteBatch();
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		sprites = new SpriteBatch();
+		decals = new DecalBatch(new CameraGroupStrategy(camera));
 		shapes = new ShapeRenderer();
+
+		Config shaderConfig = new Config();
+		shaderConfig.defaultCullFace = 0;
+		shaderProvider = new DefaultShaderWatchableProvider(
+			shaderConfig,
+			Gdx.files.internal("shaders/basic.vertex.glsl"),
+			Gdx.files.internal("shaders/basic.fragment.glsl")
+		);
+		models = new ModelBatch(shaderProvider);
+
 		assets = game.getAssets();
 		
 		return (T) this;
@@ -27,8 +50,11 @@ public abstract class BaseScreen<T extends BaseScreen<T>> extends ScreenAdapter 
 
 	@Override
 	public void dispose() {
-		batch.dispose();
+		sprites.dispose();
+		decals.dispose();
+		models.dispose();
 		shapes.dispose();
+		shaderProvider.dispose();
 	}
 
 	public void popScreen() {

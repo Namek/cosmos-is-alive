@@ -1,0 +1,27 @@
+
+pack.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+instruction
+  rotate: false
+  xy: 2, 491
+  size: 465, 487
+  orig: 465, 487
+  offset: 0, 0
+  index: -1
+intro
+  rotate: false
+  xy: 2, 2
+  size: 465, 487
+  orig: 465, 487
+  offset: 0, 0
+  index: -1
+star_fish
+  rotate: false
+  xy: 469, 729
+  size: 445, 249
+  orig: 445, 249
+  offset: 0, 0
+  index: -1

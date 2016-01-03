@@ -14,11 +14,11 @@ public class InstructionScreen extends BaseScreen<InstructionScreen> {
 	public void render(float delta) {
 		darkenBackground();
 
-		batch.begin();
+		sprites.begin();
 		float x = (sw() - assets.instruction.getRegionWidth()) / 2;
 		float y = (sh() - assets.instruction.getRegionHeight()) / 2;
-		batch.draw(assets.instruction, x, y);
-		batch.end();
+		sprites.draw(assets.instruction, x, y);
+		sprites.end();
 
 		if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Keys.ENTER)) {
 			popScreen();

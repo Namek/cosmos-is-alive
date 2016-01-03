@@ -1,10 +1,10 @@
 package net.namekdev.cosmos_is_alive.system;
 
 import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
-import net.namekdev.cosmos_is_alive.component.Colored;
-import net.namekdev.cosmos_is_alive.component.Pos;
-import net.namekdev.cosmos_is_alive.component.Rotation;
-import net.namekdev.cosmos_is_alive.component.Scale;
+//import net.namekdev.cosmos_is_alive.component.Colored;
+//import net.namekdev.cosmos_is_alive.component.Pos;
+//import net.namekdev.cosmos_is_alive.component.Rotation;
+//import net.namekdev.cosmos_is_alive.component.Scale;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenAccessor;
@@ -14,10 +14,10 @@ import com.artemis.BaseSystem;
 import com.artemis.Entity;
 
 public class TweenSystem extends BaseSystem {
-	M<Pos> mPos;
-	M<Rotation> mRotation;
-	M<Scale> mScale;
-	M<Colored> mColored;
+//	M<Pos> mPos;
+//	M<Rotation> mRotation;
+//	M<Scale> mScale;
+//	M<Colored> mColored;
 
 	public TweenManager tweenManager;
 
@@ -72,7 +72,7 @@ public class TweenSystem extends BaseSystem {
 
 		@Override
 		public int getValues(Entity entity, int tweenType, float[] returnValues) {
-			Pos pos;
+			/*Pos pos;
 			Rotation rot;
 			Scale scale;
 			Colored col;
@@ -149,14 +149,14 @@ public class TweenSystem extends BaseSystem {
 				col = mColored.get(entity);
 				returnValues[0] = col.color.a;
 				return 1;
-			}
+			}*/
 
 			return 0;
 		}
 
 		@Override
 		public void setValues(Entity entity, int tweenType, float[] newValues) {
-			Pos pos;
+			/*Pos pos;
 			Rotation rot;
 			Scale scale;
 			Colored col;
@@ -233,7 +233,7 @@ public class TweenSystem extends BaseSystem {
 				col = mColored.get(entity);
 				col.color.a = newValues[0];
 				break;
-			}
+			}*/
 		}
 	}
 }

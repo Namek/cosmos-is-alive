@@ -7,8 +7,8 @@ gwt {
     minHeapSize="1G"
 
     src = files(file("src/")) // Needs to be in front of "modules" below.
-    modules 'net.namekdev.newgame.GdxDefinition'
-    devModules 'net.namekdev.newgame.GdxDefinitionSuperdev'
+    modules 'net.namekdev.cosmos_is_alive.GdxDefinition'
+    devModules 'net.namekdev.cosmos_is_alive.GdxDefinitionSuperdev'
     project.webAppDirName = 'webapp'
 
     compiler {

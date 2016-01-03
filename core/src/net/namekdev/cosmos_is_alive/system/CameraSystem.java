@@ -1,7 +1,7 @@
 package net.namekdev.cosmos_is_alive.system;
 
 import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
-import net.namekdev.cosmos_is_alive.component.Pos;
+//import net.namekdev.cosmos_is_alive.component.Pos;
 import net.namekdev.cosmos_is_alive.enums.C;
 import net.namekdev.cosmos_is_alive.enums.Tags;
 import net.namekdev.cosmos_is_alive.util.ActionTimer;
@@ -9,18 +9,21 @@ import net.namekdev.cosmos_is_alive.util.ActionTimer.TimerState;
 
 import com.artemis.BaseSystem;
 import com.artemis.Entity;
+import com.artemis.annotations.Wire;
 import com.artemis.managers.TagManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class CameraSystem extends BaseSystem {
-	M<Pos> mPos;
+//	M<Pos> mPos;
 	TagManager tags;
 	
-	OrthographicCamera camera;
+	@Wire PerspectiveCamera camera;
+
 	ActionTimer shakeTimer = new ActionTimer();
 	
 	private final Vector2 worldCenterPos = new Vector2();
@@ -34,7 +37,6 @@ public class CameraSystem extends BaseSystem {
 
 	@Override
 	protected void initialize() {
-		camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		worldCenterPos.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f);
 		offset.set(worldCenterPos);
 	}
@@ -45,7 +47,7 @@ public class CameraSystem extends BaseSystem {
 		
 		// position camera by player
 		Entity e = tags.getEntity(Tags.Player);
-		Pos pos = mPos.get(e);
+//		Pos pos = mPos.get(e);
 		/*
 		worldToScreen(playerScreenPos.set(pos.x, pos.y));
 		float thresholdLeft = C.Camera.MoveThresholdScreenHorzSizePercent * camera.viewportWidth;

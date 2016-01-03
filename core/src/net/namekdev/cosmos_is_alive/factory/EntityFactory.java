@@ -2,13 +2,7 @@ package net.namekdev.cosmos_is_alive.factory;
 
 import net.mostlyoriginal.api.system.core.PassiveSystem;
 import net.namekdev.cosmos_is_alive.Assets;
-import net.namekdev.cosmos_is_alive.component.Collider;
-import net.namekdev.cosmos_is_alive.component.Colored;
-import net.namekdev.cosmos_is_alive.component.Pos;
-import net.namekdev.cosmos_is_alive.component.Rotation;
-import net.namekdev.cosmos_is_alive.component.Scale;
 import net.namekdev.cosmos_is_alive.component.render.Renderable;
-import net.namekdev.cosmos_is_alive.component.render.ZOrder;
 import net.namekdev.cosmos_is_alive.enums.C;
 import net.namekdev.cosmos_is_alive.enums.Tags;
 
@@ -32,13 +26,6 @@ public class EntityFactory extends PassiveSystem {
 		EntityEdit e = player.edit();
 		tags.register(Tags.Player, player);
 
-		e.create(Pos.class).xy(x, y);
-		e.create(Collider.class).wh(C.Player.ColliderBottomWidth, C.Player.ColliderBottomHeight);
-		e.create(Renderable.class).setToSprite(assets.playerTex);
-		e.create(Scale.class);
-		e.create(Rotation.class);
-		e.create(ZOrder.class);
-		e.create(Colored.class);
 
 		return player;
 	}

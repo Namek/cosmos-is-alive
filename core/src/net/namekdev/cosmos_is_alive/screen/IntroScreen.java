@@ -33,11 +33,11 @@ public class IntroScreen extends BaseScreen<IntroScreen> {
 	public void render(float delta) {
 		darkenBackground();
 
-		batch.begin();
+		sprites.begin();
 		float x = (sw() - assets.intro.getRegionWidth()) / 2;
 		float y = (sh() - assets.intro.getRegionHeight()) / 2;
-		batch.draw(assets.intro, x, y);
-		batch.end();
+		sprites.draw(assets.intro, x, y);
+		sprites.end();
 
 		if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Keys.ENTER)) {
 			goToNextScreen();

@@ -24,13 +24,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 
 public class PlayerStateSystem extends BaseSystem {
-	M<Pos> mPos;
-	M<Rotation> mRotation;
-	M<Scale> mScale;
+//	M<Pos> mPos;
+//	M<Rotation> mRotation;
+//	M<Scale> mScale;
 	M<ZOrder> mZOrder;
 
 	AspectHelpers aspects;
-	CollisionSystem collisions;
+//	CollisionSystem collisions;
 //	DepthSystem depthSystem;
 	RenderSystem renderSystem;
 	TagManager tags;
@@ -49,7 +49,7 @@ public class PlayerStateSystem extends BaseSystem {
 	@Override
 	protected void processSystem() {
 		float dt = world.getDelta();
-
+/*
 		final Entity e = tags.getEntity(Tags.Player);
 		Pos pos = mPos.get(e);
 		Rotation rot = mRotation.get(e);
@@ -100,6 +100,6 @@ public class PlayerStateSystem extends BaseSystem {
 					.end();
 				}
 			});
-		}
+		}*/
 	}
 }

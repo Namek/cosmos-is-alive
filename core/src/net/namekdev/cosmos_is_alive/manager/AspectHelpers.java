@@ -1,7 +1,6 @@
 package net.namekdev.cosmos_is_alive.manager;
 
 import net.mostlyoriginal.api.system.core.PassiveSystem;
-import net.namekdev.cosmos_is_alive.component.PosChild;
 import net.namekdev.cosmos_is_alive.util.BagUtils;
 import net.namekdev.cosmos_is_alive.util.BagUtils.IntBagPredicate;
 

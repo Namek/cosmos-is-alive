@@ -14,8 +14,6 @@ import net.namekdev.cosmos_is_alive.factory.EntityFactory;
 import net.namekdev.cosmos_is_alive.manager.AspectHelpers;
 import net.namekdev.cosmos_is_alive.manager.WorldInitManager;
 import net.namekdev.cosmos_is_alive.system.CameraSystem;
-import net.namekdev.cosmos_is_alive.system.CollisionDebugSystem;
-import net.namekdev.cosmos_is_alive.system.CollisionSystem;
 import net.namekdev.cosmos_is_alive.system.GameStateSystem;
 import net.namekdev.cosmos_is_alive.system.PlayerStateSystem;
 import net.namekdev.cosmos_is_alive.system.RenderSystem;
@@ -29,6 +27,10 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.managers.TagManager;
 import com.artemis.utils.Bag;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 
 public class GameScreen extends BaseScreen<GameScreen> {
 	World world;
@@ -46,7 +48,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 		WorldConfiguration cfg = new WorldConfigurationBuilder()
 //			.with(new EntityTracker(entityTrackerServer))
 //			.with(new EntityTracker(new EntityTrackerMainWindow()))
-			.with(new ExtendedComponentMapperPlugin())
+//			.with(new ExtendedComponentMapperPlugin())
 			.with(new AspectHelpers())
 			.with(entityFactory)
 			.with(new WorldInitManager())
@@ -56,8 +58,8 @@ public class GameScreen extends BaseScreen<GameScreen> {
 			.with(new TweenSystem())
 			.with(new GameStateSystem())
 			.with(new PlayerStateSystem())
-			.with(new CollisionSystem())
-			// TODO your stuff here
+//			.with(new CollisionDetectionSystem())
+
 			.with(new CameraSystem())
 			.with(new RenderSystem())
 //			.with(new CollisionDebugSystem())
@@ -78,6 +80,14 @@ public class GameScreen extends BaseScreen<GameScreen> {
 				}
 			}
 		});
+
+		cfg.register(camera);
+		cfg.register(sprites);
+		cfg.register(decals);
+		cfg.register(models);
+		cfg.register(shapes);
+		cfg.register(shaderProvider);
+		cfg.register(assets);
 
 		world = new World(cfg);
 		world.getSystem(EventSystem.class).registerEvents(this);

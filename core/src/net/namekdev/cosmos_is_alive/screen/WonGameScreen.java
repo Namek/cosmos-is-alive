@@ -14,12 +14,12 @@ public class WonGameScreen extends BaseScreen<WonGameScreen> {
 	public void render(float delta) {
 		darkenBackground();
 		
-		batch.begin();
+		sprites.begin();
 		// TODO
 //		float x = (sw() - w) / 2;
 //		float y = (sh() - h) / 2;
 //		batch.draw(whatever, x, y)
-		batch.end();
+		sprites.end();
 		
 		if (Gdx.input.justTouched() || Gdx.input.isKeyJustPressed(Keys.ENTER)) {
 			popScreen();

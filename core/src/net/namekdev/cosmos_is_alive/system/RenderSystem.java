@@ -1,20 +1,19 @@
 package net.namekdev.cosmos_is_alive.system;
 
 import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
-import net.namekdev.cosmos_is_alive.component.Colored;
-import net.namekdev.cosmos_is_alive.component.Origin;
-import net.namekdev.cosmos_is_alive.component.Pos;
-import net.namekdev.cosmos_is_alive.component.PosChild;
-import net.namekdev.cosmos_is_alive.component.Rotation;
-import net.namekdev.cosmos_is_alive.component.Scale;
 import net.namekdev.cosmos_is_alive.component.render.Layer;
 import net.namekdev.cosmos_is_alive.component.render.Renderable;
 import net.namekdev.cosmos_is_alive.component.render.RenderableChild;
 import net.namekdev.cosmos_is_alive.component.render.ZOrder;
+import net.namekdev.cosmos_is_alive.system.render.renderers.DecalRenderer;
+import net.namekdev.cosmos_is_alive.system.render.renderers.IRenderer;
+import net.namekdev.cosmos_is_alive.system.render.renderers.ModelRenderer;
+import net.namekdev.cosmos_is_alive.system.render.renderers.SpriteRenderer;
 
 import com.artemis.Aspect;
 import com.artemis.AspectSubscriptionManager;
 import com.artemis.BaseEntitySystem;
+import com.artemis.Entity;
 import com.artemis.EntitySubscription;
 import com.artemis.EntitySubscription.SubscriptionListener;
 import com.artemis.utils.IntBag;
@@ -33,21 +32,23 @@ import com.badlogic.gdx.utils.LongArray;
  * @author Namek
  */
 public class RenderSystem extends BaseEntitySystem {
-	private M<Colored> mColored;
+//	private M<Colored> mColored;
 	private M<Layer> mLayer;
-	private M<Origin> mOrigin;
-	private M<Pos> mPos;
-	private M<PosChild> mPosChild;
+//	private M<Origin> mOrigin;
+//	private M<Pos> mPos;
+//	private M<PosChild> mPosChild;
 	private M<Renderable> mRenderable;
 	private M<RenderableChild> mRenderableChild;
-	private M<Rotation> mRotation;
-	private M<Scale> mScale;
+//	private M<Rotation> mRotation;
+//	private M<Scale> mScale;
 	private M<ZOrder> mZOrder;
 
 	private CameraSystem cameraSystem;
 
 	public SpriteBatch sprites;
 	public ShapeRenderer shapes;
+	
+	private IRenderer[] renderers;
 
 	private LongArray sorted = new LongArray(100);
 	private int renderablesCount = 0;
@@ -84,6 +85,16 @@ public class RenderSystem extends BaseEntitySystem {
 
 	@Override
 	protected void initialize() {
+		renderers = new IRenderer[3];
+		renderers[Renderable.MODEL] = new ModelRenderer();
+		renderers[Renderable.DECAL] = new DecalRenderer();
+		renderers[Renderable.SPRITE] = new SpriteRenderer();
+		
+		for (IRenderer renderer : renderers) {
+			world.inject(renderer);
+			renderer.initialize();
+		}
+		
 		AspectSubscriptionManager subscriptions = world.getAspectSubscriptionManager();
 		EntitySubscription renderableSub = subscriptions.get(Aspect.all(Renderable.class));
 		EntitySubscription renderableChildSub = subscriptions.get(Aspect.all(RenderableChild.class));
@@ -139,8 +150,8 @@ public class RenderSystem extends BaseEntitySystem {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
-		sprites.begin();
-		shapes.begin(ShapeType.Line);
+		
+		IRenderer lastRenderer = null;
 
 		final long[] metas = sorted.items;
 		for (int i = 0, n = sorted.size; i < n; ++i) {
@@ -152,60 +163,30 @@ public class RenderSystem extends BaseEntitySystem {
 				return;
 			}
 
-			Pos pos = mPos.get(e);
-			Scale scale = mScale.getSafe(e);
-			Origin origin = mOrigin.getSafe(e);
-			Rotation rot = mRotation.getSafe(e);
-
-			float scaleX = scale != null ? scale.x : 1f;
-			float scaleY = scale != null ? scale.y : 1f;
-			float originX = origin != null ? origin.x : Origin.DEFAULT_X;
-			float originY = origin != null ? origin.y : Origin.DEFAULT_Y;
-			float rotation = rot != null ? rot.rotation : 0;
-
-			if ((renderable.type & Renderable.SPRITE) != 0) {
-				TextureRegion img = renderable.sprite;
-				float w = img.getRegionWidth();
-				float h = img.getRegionHeight();
-
-				float x = pos.x, y = pos.y;
-				if (mPosChild.has(e)) {
-					Pos parentPos = mPos.get(world.getEntity(mPosChild.get(e).parent));
-					x += parentPos.x;
-					y += parentPos.y;
+			for (int j = 0; j < renderers.length; ++j) {
+				final boolean hasRenderer = ((renderable.type >> j) & 1) == 1;
+				
+				if (hasRenderer) {
+					IRenderer renderer = renderers[j];
+					
+					if (lastRenderer == null) {
+						renderer.begin();
+						lastRenderer = renderer;
+					}
+					else if (lastRenderer != renderer) {
+						lastRenderer.end();
+						renderer.begin();
+						lastRenderer = renderer;
+					}
+					
+					renderer.draw(e);
 				}
-
-				if (mColored.has(e)) {
-					Colored col = mColored.get(e);
-					sprites.setColor(col.color);
-				}
-				else {
-					sprites.setColor(Color.WHITE);
-				}
-
-				float ox = originX*w;
-				float oy = originY*h;
-
-				sprites.draw(img, x - ox, y - oy, ox, oy, w, h, scaleX, scaleY, rotation);
-
-//				if (renderable.debugFrame && mCollider.has(e)) {
-//					collisions.getRect(e, tmpRect);
-//					shapes.rect(tmpRect.x, tmpRect.y, tmpRect.width, tmpRect.height);
-//					renderable.debugFrame = false;
-//				}
 			}
-
-			if ((renderable.type & Renderable.FRAME_ANIM) != 0) {
-				// TODO
-			}
-
-			if ((renderable.type & Renderable.CUSTOM_RENDERER) != 0) {
-				 renderable.renderer.render(e, sprites, shapes);
+			
+			if (lastRenderer != null) {
+				lastRenderer.end();
 			}
 		}
-
-		sprites.end();
-		shapes.end();
 	}
 
 	private void refresh() {

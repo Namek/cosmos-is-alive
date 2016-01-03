@@ -1,4 +1,4 @@
-package net.namekdev.cosmos_is_alive.component;
+package net.namekdev.cosmos_is_alive.component.render;
 
 import com.artemis.PooledComponent;
 import com.badlogic.gdx.graphics.Color;
