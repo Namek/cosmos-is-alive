@@ -4,23 +4,17 @@ import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.DecalComponent;
 
 import com.artemis.ComponentMapper;
-import com.artemis.World;
 import com.artemis.annotations.Wire;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
-import com.badlogic.gdx.math.Vector3;
 
-public class DecalRenderer implements IRenderer  {
-	private World world;
+public class DecalRenderer implements IRenderer {
 	private ComponentMapper<DecalComponent> mDecal;
 	private ComponentMapper<Transform> mTransform;
 	
 	@Wire PerspectiveCamera camera;
 	@Wire DecalBatch batch;
-
-
-	private final Vector3 lookPoint = new Vector3();
 
 
 	@Override

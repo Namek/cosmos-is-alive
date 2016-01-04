@@ -141,7 +141,7 @@ public class RenderSystem extends BaseEntitySystem {
 	@Override
 	protected void processSystem() {
 		if (dirtyOrder) {
-			refresh();
+			refreshEntityOrder();
 			dirtyOrder = false;
 		}
 
@@ -196,7 +196,7 @@ public class RenderSystem extends BaseEntitySystem {
 		renderer.draw(entityId);
 	}
 
-	private void refresh() {
+	private void refreshEntityOrder() {
 		final IntBag entities = getEntityIds();
 		final int[] data = entities.getData();
 
