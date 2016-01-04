@@ -24,13 +24,14 @@ public class CameraSystem extends BaseSystem {
 
 	private final Vector3 offset = new Vector3();
 	private final Vector3 tmpScreenPos = new Vector3();
+	private final Vector3 tmpAxis = new Vector3();
 	
 
 	@Override
 	protected void initialize() {
 		Gdx.input.setCursorCatched(true);
 		offset.set(0, 0, 3);
-		camera.far = 100;
+		camera.far = 1000;
 		camera.near = 0.1f;
 		camera.update(true);
 	}
@@ -39,10 +40,10 @@ public class CameraSystem extends BaseSystem {
 	protected void processSystem() {
 		float dt = world.getDelta();
 
-		
 		if (freeLookEnabled) {
-			camera.rotate(Gdx.input.getDeltaX()*0.1f, 0, 1, 0);
-			camera.rotate(Gdx.input.getDeltaY()*0.1f, 1, 0, 0);
+			camera.rotate(-Gdx.input.getDeltaX()*0.1f, 0, 1, 0);
+			tmpAxis.set(camera.direction).crs(camera.up);
+			camera.rotate(tmpAxis, -Gdx.input.getDeltaY()*0.1f);
 			camera.update();
 		}
 
