@@ -4,6 +4,7 @@ import static net.namekdev.cosmos_is_alive.system.TweenSystem.EntityTweenAccesso
 import static aurelienribon.tweenengine.TweenEquations.*;
 import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
 import net.namekdev.cosmos_is_alive.component.*;
+import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.ZOrder;
 import net.namekdev.cosmos_is_alive.enums.C;
 import net.namekdev.cosmos_is_alive.enums.Tags;
@@ -16,21 +17,23 @@ import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
 
 import com.artemis.BaseSystem;
+import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.managers.TagManager;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector3;
 
 public class PlayerStateSystem extends BaseSystem {
 //	M<Pos> mPos;
 //	M<Rotation> mRotation;
 //	M<Scale> mScale;
 	M<ZOrder> mZOrder;
+	ComponentMapper<Transform> mTransform;
 
 	AspectHelpers aspects;
 //	CollisionSystem collisions;
-//	DepthSystem depthSystem;
 	RenderSystem renderSystem;
 	TagManager tags;
 	TweenSystem tweens;
@@ -100,5 +103,14 @@ public class PlayerStateSystem extends BaseSystem {
 				}
 			});
 		}*/
+	}
+
+	public Entity getPlayer() {
+		return tags.getEntity(Tags.Player);
+	}
+
+	public Vector3 getPlayerPosition(Vector3 playerPosition) {
+		Transform transform = mTransform.get(getPlayer());
+		return playerPosition.set(transform.currentPos);
 	}
 }

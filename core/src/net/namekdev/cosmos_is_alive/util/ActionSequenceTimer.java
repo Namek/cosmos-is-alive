@@ -40,7 +40,13 @@ public class ActionSequenceTimer extends ActionTimer {
 				// Oh, there are no more timers?
 				if (currentTimer >= timers.length) {
 					stop();
-					return TimerState.JustStopped;
+
+					if (autoRestart) {
+						start();
+					}
+					else {
+						return TimerState.JustStopped;
+					}
 				}
 
 				timer = timers[currentTimer];

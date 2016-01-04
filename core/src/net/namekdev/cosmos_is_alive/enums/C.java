@@ -11,6 +11,8 @@ public interface C {
 		public static final float ShakeWidthMax = 10;
 		public static final float ShakeHeightMin = 1;
 		public static final float ShakeHeightMax = 3;
+
+		public static final float RotationDuration = 0.5f;
 	}
 	
 	public interface World {

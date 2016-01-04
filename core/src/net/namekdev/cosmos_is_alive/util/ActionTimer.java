@@ -15,6 +15,8 @@ public class ActionTimer {
 
 	public TimerState state;
 
+	public boolean autoRestart = false;
+
 
 	public enum TimerState {
 		Idle,
@@ -29,6 +31,11 @@ public class ActionTimer {
 		this.duration = maxTime;
 	}
 
+	public ActionTimer autoRestart() {
+		this.autoRestart = true;
+		return this;
+	}
+
 	public TimerState update(float deltaTime) {
 		if (state == TimerState.Active) {
 			timeElapsed += deltaTime;
@@ -36,7 +43,13 @@ public class ActionTimer {
 
 			if (timeLeft <= 0) {
 				stop();
-				return TimerState.JustStopped;
+
+				if (autoRestart) {
+					start();
+				}
+				else {
+					return TimerState.JustStopped;
+				}
 			}
 			else {
 				progress = timeElapsed / duration;

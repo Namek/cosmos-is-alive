@@ -31,7 +31,8 @@ public class EntityFactory extends PassiveSystem {
 		EntityEdit e = player.edit();
 		tags.register(Tags.Player, player);
 
-		setDecal(e, assets.playerTex, C.Player.Width, C.Player.Height);
+		setDecal(e, assets.playerTex, C.Player.Width, C.Player.Height)
+			.lookAtCamera = true;
 		e.create(Transform.class).xyz(0, 0, -1);
 
 		return player;
