@@ -8,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -19,7 +20,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 
 public abstract class BaseScreen<T extends BaseScreen<T>> extends ScreenAdapter {
 	protected MyNGame game;
-	protected Camera camera;
+	protected PerspectiveCamera camera;
+	protected OrthographicCamera camera2d;
 	protected SpriteBatch sprites;
 	protected DecalBatch decals;
 	protected ModelBatch models;
@@ -29,7 +31,8 @@ public abstract class BaseScreen<T extends BaseScreen<T>> extends ScreenAdapter 
 	
 	public T init(MyNGame game) {
 		this.game = game;
-		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new PerspectiveCamera(67, sw(), sh());
+		camera2d = new OrthographicCamera(sw(), sh());
 		sprites = new SpriteBatch();
 		decals = new DecalBatch(new CameraGroupStrategy(camera));
 		shapes = new ShapeRenderer();

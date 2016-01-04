@@ -16,9 +16,9 @@ import net.namekdev.cosmos_is_alive.manager.WorldInitManager;
 import net.namekdev.cosmos_is_alive.system.CameraSystem;
 import net.namekdev.cosmos_is_alive.system.GameStateSystem;
 import net.namekdev.cosmos_is_alive.system.PlayerStateSystem;
-import net.namekdev.cosmos_is_alive.system.RenderSystem;
 import net.namekdev.cosmos_is_alive.system.SchedulerSystem;
 import net.namekdev.cosmos_is_alive.system.TweenSystem;
+import net.namekdev.cosmos_is_alive.system.base.render.RenderSystem;
 
 import com.artemis.BaseSystem;
 import com.artemis.SystemInvocationStrategy;
@@ -79,6 +79,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 		});
 
 		cfg.register(camera);
+		cfg.register(camera2d);
 		cfg.register(sprites);
 		cfg.register(decals);
 		cfg.register(models);

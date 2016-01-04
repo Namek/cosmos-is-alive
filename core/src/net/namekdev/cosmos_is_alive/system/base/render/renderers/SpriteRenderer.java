@@ -1,4 +1,4 @@
-package net.namekdev.cosmos_is_alive.system.render.renderers;
+package net.namekdev.cosmos_is_alive.system.base.render.renderers;
 
 import net.namekdev.cosmos_is_alive.component.render.Renderable;
 import net.namekdev.cosmos_is_alive.component.render.SpriteComponent;
@@ -8,6 +8,8 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.artemis.annotations.Wire;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -15,6 +17,7 @@ public class SpriteRenderer implements IRenderer {
 	private World world;
 	private ComponentMapper<SpriteComponent> sm;
 	
+	@Wire private OrthographicCamera camera2d;
 	@Wire private SpriteBatch batch;
 
 
@@ -29,6 +32,8 @@ public class SpriteRenderer implements IRenderer {
 
 	@Override
 	public void begin() {
+		camera2d.update();
+		batch.setProjectionMatrix(camera2d.combined);
 		batch.begin();
 	}
 

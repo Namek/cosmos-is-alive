@@ -1,30 +1,27 @@
-package net.namekdev.cosmos_is_alive.system;
+package net.namekdev.cosmos_is_alive.system.base.render;
 
-import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
+import net.namekdev.cosmos_is_alive.component.render.CustomRenderer;
 import net.namekdev.cosmos_is_alive.component.render.Layer;
 import net.namekdev.cosmos_is_alive.component.render.Renderable;
 import net.namekdev.cosmos_is_alive.component.render.RenderableChild;
 import net.namekdev.cosmos_is_alive.component.render.ZOrder;
-import net.namekdev.cosmos_is_alive.system.render.renderers.DecalRenderer;
-import net.namekdev.cosmos_is_alive.system.render.renderers.IRenderer;
-import net.namekdev.cosmos_is_alive.system.render.renderers.ModelRenderer;
-import net.namekdev.cosmos_is_alive.system.render.renderers.SpriteRenderer;
+import net.namekdev.cosmos_is_alive.system.base.render.renderers.DecalRenderer;
+import net.namekdev.cosmos_is_alive.system.base.render.renderers.IRenderer;
+import net.namekdev.cosmos_is_alive.system.base.render.renderers.ModelRenderer;
+import net.namekdev.cosmos_is_alive.system.base.render.renderers.SpriteRenderer;
 
 import com.artemis.Aspect;
 import com.artemis.AspectSubscriptionManager;
 import com.artemis.BaseEntitySystem;
 import com.artemis.ComponentMapper;
-import com.artemis.Entity;
 import com.artemis.EntitySubscription;
 import com.artemis.EntitySubscription.SubscriptionListener;
+import com.artemis.annotations.Wire;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.utils.LongArray;
 
 /**
@@ -33,23 +30,14 @@ import com.badlogic.gdx.utils.LongArray;
  * @author Namek
  */
 public class RenderSystem extends BaseEntitySystem {
-//	private M<Colored> mColored;
 	private ComponentMapper<Layer> mLayer;
-//	private M<Origin> mOrigin;
-//	private M<Pos> mPos;
-//	private M<PosChild> mPosChild;
+	private ComponentMapper<CustomRenderer> mCustomRenderer;
 	private ComponentMapper<Renderable> mRenderable;
 	private ComponentMapper<RenderableChild> mRenderableChild;
-//	private M<Rotation> mRotation;
-//	private M<Scale> mScale;
 	private ComponentMapper<ZOrder> mZOrder;
-
-	private CameraSystem cameraSystem;
-
-	public SpriteBatch sprites;
-	public ShapeRenderer shapes;
 	
 	private IRenderer[] renderers;
+	private IRenderer lastRenderer; 
 
 	private LongArray sorted = new LongArray(100);
 	private int renderablesCount = 0;
@@ -99,6 +87,7 @@ public class RenderSystem extends BaseEntitySystem {
 		AspectSubscriptionManager subscriptions = world.getAspectSubscriptionManager();
 		EntitySubscription renderableSub = subscriptions.get(Aspect.all(Renderable.class));
 		EntitySubscription renderableChildSub = subscriptions.get(Aspect.all(RenderableChild.class));
+		EntitySubscription customRendererSub = subscriptions.get(Aspect.all(CustomRenderer.class));
 
 		renderableSub.addSubscriptionListener(new SubscriptionListener() {
 			@Override
@@ -127,15 +116,26 @@ public class RenderSystem extends BaseEntitySystem {
 				dirtyOrder = true;
 			}
 		});
-
-		sprites = new SpriteBatch();
-		shapes = new ShapeRenderer();
+		
+		customRendererSub.addSubscriptionListener(new SubscriptionListener() {
+			@Override
+			public void inserted(IntBag entities) {
+				final int n = entities.size();
+				final int[] ids = entities.getData();
+				
+				for (int i = 0; i < n; ++i) {
+					IRenderer renderer = mCustomRenderer.get(ids[i]).renderer;
+					world.inject(renderer);
+				}
+			}
+			@Override
+			public void removed(IntBag entities) {
+			}
+		});
 	}
 
 	@Override
 	protected void dispose() {
-		sprites.dispose();
-		shapes.dispose();
 	}
 
 	@Override
@@ -145,13 +145,11 @@ public class RenderSystem extends BaseEntitySystem {
 			dirtyOrder = false;
 		}
 
-		sprites.setProjectionMatrix(cameraSystem.camera.combined);
-
 		Gdx.gl.glClearColor(0, 0, 1, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		
-		IRenderer lastRenderer = null;
+		lastRenderer = null;
 
 		final long[] metas = sorted.items;
 		for (int i = 0, n = sorted.size; i < n; ++i) {
@@ -168,25 +166,34 @@ public class RenderSystem extends BaseEntitySystem {
 				
 				if (hasRenderer) {
 					IRenderer renderer = renderers[j];
-					
-					if (lastRenderer == null) {
-						renderer.begin();
-						lastRenderer = renderer;
-					}
-					else if (lastRenderer.getBatch() != renderer.getBatch()) {
-						lastRenderer.end();
-						renderer.begin();
-						lastRenderer = renderer;
-					}
-					
-					renderer.draw(e);
+					render(e, renderer);
 				}
+			}
+
+			CustomRenderer custom = mCustomRenderer.getSafe(e);
+			if (custom != null) {
+				IRenderer renderer = custom.renderer;
+				render(e, renderer);
 			}
 		}
 		
 		if (lastRenderer != null) {
 			lastRenderer.end();
 		}
+	}
+	
+	private void render(int entityId, IRenderer renderer) {
+		if (lastRenderer == null) {
+			renderer.begin();
+			lastRenderer = renderer;
+		}
+		else if (lastRenderer.getBatch() != renderer.getBatch()) {
+			lastRenderer.end();
+			renderer.begin();
+			lastRenderer = renderer;
+		}
+		
+		renderer.draw(entityId);
 	}
 
 	private void refresh() {

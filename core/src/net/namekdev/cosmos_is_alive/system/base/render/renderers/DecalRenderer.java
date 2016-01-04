@@ -1,4 +1,4 @@
-package net.namekdev.cosmos_is_alive.system.render.renderers;
+package net.namekdev.cosmos_is_alive.system.base.render.renderers;
 
 import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.DecalComponent;

@@ -1,4 +1,4 @@
-package net.namekdev.cosmos_is_alive.system.render.renderers;
+package net.namekdev.cosmos_is_alive.system.base.render.renderers;
 
 
 public interface IRenderer {

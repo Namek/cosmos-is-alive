@@ -3,7 +3,7 @@ package net.namekdev.cosmos_is_alive.component.render;
 import com.artemis.PooledComponent;
 
 /**
- * Determines type of renderer and target layer.
+ * Determines type of renderer, visibility and lists children.
  *
  * @author Namek
  * @see RenderSystem
