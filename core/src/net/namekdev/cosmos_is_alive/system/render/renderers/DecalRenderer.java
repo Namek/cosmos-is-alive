@@ -26,6 +26,11 @@ public class DecalRenderer implements IRenderer  {
 	@Override
 	public void initialize() {
 	}
+	
+	@Override
+	public Object getBatch() {
+		return batch;
+	}
 
 	@Override
 	public void begin() {

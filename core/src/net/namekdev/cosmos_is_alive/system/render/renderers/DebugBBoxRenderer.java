@@ -33,6 +33,11 @@ public class DebugBBoxRenderer implements IRenderer {
 	public void initialize() {
 		createDebugBoundingBox();
 	}
+	
+	@Override
+	public Object getBatch() {
+		return models;
+	}
 
 	@Override
 	public void begin() {

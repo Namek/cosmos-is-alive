@@ -173,7 +173,7 @@ public class RenderSystem extends BaseEntitySystem {
 						renderer.begin();
 						lastRenderer = renderer;
 					}
-					else if (lastRenderer != renderer) {
+					else if (lastRenderer.getBatch() != renderer.getBatch()) {
 						lastRenderer.end();
 						renderer.begin();
 						lastRenderer = renderer;

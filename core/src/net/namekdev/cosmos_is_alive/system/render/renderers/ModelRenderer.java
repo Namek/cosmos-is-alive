@@ -32,6 +32,11 @@ public class ModelRenderer implements IRenderer {
         directionalLight = new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f);
         environment.add(directionalLight);
 	}
+	
+	@Override
+	public Object getBatch() {
+		return modelBatch;
+	}
 
 	@Override
 	public void begin() {
