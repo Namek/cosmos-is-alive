@@ -15,6 +15,7 @@ public class Assets {
 	public TextureRegion intro;
 	public TextureRegion instruction;
 	public TextureRegion playerTex;
+	public TextureRegion stars;
 
 	
 
@@ -29,6 +30,7 @@ public class Assets {
 		intro = textures.findRegion("intro");
 		instruction = textures.findRegion("instruction");
 		playerTex = textures.findRegion("star_fish");
+		stars = textures.findRegion("stars");
 	}
 
 }

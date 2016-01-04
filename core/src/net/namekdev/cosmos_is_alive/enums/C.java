@@ -14,7 +14,8 @@ public interface C {
 	}
 	
 	public interface World {
-		
+		public static final float BoxWidth = 256*4;
+		public static final float BoxHeight = 256*4;
 	}
 	
 	public interface Levels {

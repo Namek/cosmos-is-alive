@@ -30,17 +30,58 @@ public class EntityFactory extends PassiveSystem {
 		Entity player = world.createEntity();
 		EntityEdit e = player.edit();
 		tags.register(Tags.Player, player);
-		
-		e.create(Renderable.class).type = Renderable.DECAL;
-		e.create(DecalComponent.class)
-			.set(createDecal(assets.playerTex, C.Player.Width, C.Player.Height))
-			.lookAtCamera = false;
+
+		setDecal(e, assets.playerTex, C.Player.Width, C.Player.Height);
 		e.create(Transform.class).xyz(0, 0, -1);
 
 		return player;
 	}
+
+	public void createStars() {
+		Entity stars = null;
+		EntityEdit e = null;
+		
+		final float mapWidth = C.World.BoxWidth;
+		final float mapHeight = C.World.BoxHeight;
+
+		// front
+		stars = world.createEntity();
+		e = stars.edit();
+		setDecal(e, assets.stars, mapWidth, mapHeight);
+		xyz(e, 0, 0, -mapWidth/2);
+		
+		// left
+		stars = world.createEntity();
+		e = stars.edit();
+		setDecal(e, assets.stars, mapWidth, mapHeight);
+		xyz(e, -mapWidth/2, 0, 0).look(1, 0, 0);
+		
+		// right
+		stars = world.createEntity();
+		e = stars.edit();
+		setDecal(e, assets.stars, mapWidth, mapHeight);
+		xyz(e, mapWidth/2, 0, 0).look(-1, 0, 0);
+		
+		// back
+		stars = world.createEntity();
+		e = stars.edit();
+		setDecal(e, assets.stars, mapWidth, mapHeight);
+		xyz(e, 0, 0, mapWidth/2).look(0, 0, 1);
+		
+		// bottom
+		stars = world.createEntity();
+		e = stars.edit();
+		setDecal(e, assets.stars, mapWidth, mapHeight);
+		xyz(e, 0, -mapWidth/2, 0).look(0, 1, 0);
+		
+		// up
+		stars = world.createEntity();
+		e = stars.edit();
+		setDecal(e, assets.stars, mapWidth, mapHeight);
+		xyz(e, 0, mapWidth/2, 0).look(0, -1, 0);
+	}
 	
-	Decal createDecal(TextureRegion texture, float width, float height) {
+	public static Decal createDecal(TextureRegion texture, float width, float height) {
 		Decal decal = new Decal();
 		decal.setTextureRegion(texture);
 		decal.setBlending(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
@@ -48,5 +89,17 @@ public class EntityFactory extends PassiveSystem {
 		decal.setColor(1, 1, 1, 1);
 
 		return decal;
+	}
+	
+	public static DecalComponent setDecal(EntityEdit e, TextureRegion texture, float width, float height) {
+		e.create(Renderable.class).type = Renderable.DECAL;
+
+		return e.create(DecalComponent.class)
+			.set(createDecal(texture, width, height));
+	}
+	
+	public static Transform xyz(EntityEdit e, float x, float y, float z) {
+		return e.create(Transform.class)
+			.xyz(x, y, z);
 	}
 }

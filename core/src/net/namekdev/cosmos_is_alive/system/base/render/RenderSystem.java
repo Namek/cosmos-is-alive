@@ -152,7 +152,8 @@ public class RenderSystem extends BaseEntitySystem {
 		lastRenderer = null;
 
 		final long[] metas = sorted.items;
-		for (int i = 0, n = sorted.size; i < n; ++i) {
+		final int n = sorted.size;
+		for (int i = 0; i < n; ++i) {
 			final int e = (int)(metas[i] & ((1 << ENTITY_ID_BITS_COUNT) - 1));
 
 			Renderable renderable = mRenderable.get(e);

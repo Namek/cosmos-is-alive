@@ -13,9 +13,9 @@ public class WorldInitManager extends BaseSystem {
 	
 
 	private void init() {
+		factory.createStars();
 		factory.createPlayer(150, 200);
 
-		// TODO create your stuff
 	}
 
 	@Override
