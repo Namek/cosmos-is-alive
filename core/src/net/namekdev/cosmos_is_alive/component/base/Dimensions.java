@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class Dimensions extends PooledComponent {
 	/** XYZ values represent: width, height, depth */
-	public final Vector3 dimensions = new Vector3();
+	public final Vector3 dimensions = new Vector3(1, 1, 1);
 
 
 	public float getWidth() {
@@ -48,6 +48,6 @@ public class Dimensions extends PooledComponent {
 
 	@Override
 	protected void reset() {
-		dimensions.set(0, 0, 0);
+		dimensions.set(1, 1, 1);
 	}
 }

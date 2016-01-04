@@ -5,7 +5,7 @@ public interface C {
 		public static final float Width = 111.25f/100;
 		public static final float Height = 62.25f/100;
 	}
-	
+
 	public interface Camera {
 		public static final float ShakeWidthMin = 4;
 		public static final float ShakeWidthMax = 10;
@@ -14,12 +14,11 @@ public interface C {
 
 		public static final float RotationDuration = 0.5f;
 	}
-	
+
 	public interface World {
-		public static final float BoxWidth = 256*4;
-		public static final float BoxHeight = 256*4;
+		public static final float BoxSize = 256*4;
 	}
-	
+
 	public interface Levels {
 		public static final float[] ProgressingSpeed = { 0.1f, 0.12f, 0.14f };
 		public static final int[] GoalMoney = { 100, 120, 140 };

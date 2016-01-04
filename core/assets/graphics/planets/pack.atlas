@@ -1,0 +1,13 @@
+
+pack.png
+size: 2048,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+planet_earth
+  rotate: false
+  xy: 0, 0
+  size: 2048, 1024
+  orig: 2048, 1024
+  offset: 0, 0
+  index: -1

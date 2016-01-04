@@ -1,5 +1,7 @@
 package net.namekdev.cosmos_is_alive.system.base.render.renderers;
 
+import net.namekdev.cosmos_is_alive.component.base.Dimensions;
+import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.ModelSetComponent;
 import net.namekdev.cosmos_is_alive.component.render.Shaders;
 
@@ -8,7 +10,7 @@ import com.artemis.annotations.Wire;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 
@@ -16,13 +18,15 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 public class ModelRenderer implements IRenderer {
 	ComponentMapper<ModelSetComponent> mModelSet;
 	ComponentMapper<Shaders> mShaders;
+	ComponentMapper<Transform> mTransform;
+	ComponentMapper<Dimensions> mDimensions;
 	
 	@Wire ModelBatch modelBatch;
 	@Wire PerspectiveCamera camera;
 	
 	Environment environment;
 	DirectionalLight directionalLight;
-	
+
 
 	@Override
 	public void initialize() {
@@ -52,26 +56,35 @@ public class ModelRenderer implements IRenderer {
 	public void draw(int e) {
 		ModelSetComponent models = mModelSet.get(e);
 
-		if (models != null) {
-			Shaders shaders = mShaders.get(e);
+		if (models == null) {
+			return;
+		}
 
-			for (int i = 0; i < models.instances.length; ++i) {
-				RenderableProvider model = models.instances[i];
+		Transform transform = mTransform.get(e);
+		Shaders shaders = mShaders.getSafe(e);
+		Dimensions dims = mDimensions.getSafe(e);
 
-				if (shaders == null) {
+		for (int i = 0; i < models.instances.length; ++i) {
+			ModelInstance model = models.instances[i];
+
+			transform.toMatrix4(model.transform);
+
+			if (dims != null) {
+				model.transform.scale(dims.dimensions.x, dims.dimensions.y, dims.dimensions.z);
+			}
+
+			if (shaders == null) {
+				modelBatch.render(model, environment);
+			}
+			else {
+				if (shaders.useDefaultShader) {
 					modelBatch.render(model, environment);
 				}
-				else {
-					if (shaders.useDefaultShader) {
-						modelBatch.render(model, environment);
-					}
 
-					for (int j = 0, n = shaders.shaders.length; j < n; ++j) {
-						modelBatch.render(model, environment, shaders.shaders[j]);
-					}
+				for (int j = 0, n = shaders.shaders.length; j < n; ++j) {
+					modelBatch.render(model, environment, shaders.shaders[j]);
 				}
 			}
 		}
 	}
-
 }

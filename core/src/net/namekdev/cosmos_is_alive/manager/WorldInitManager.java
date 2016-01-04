@@ -10,10 +10,11 @@ public class WorldInitManager extends BaseSystem {
 	TagManager tags;
 
 	private boolean initialized = false;
-	
+
 
 	private void init() {
 		factory.createStars();
+		factory.createPlanet(4, 0, -6, 10);
 		factory.createPlayer(150, 200);
 
 	}
