@@ -2,12 +2,8 @@ package net.namekdev.cosmos_is_alive.enums;
 
 public interface C {
 	public interface Player {
-		public static final float NormalMoveSpeed = 8f;
-		public static final float WalkStepDuration = 0.1f;
-		public static final float WalkRotation = 3f;
-
-		public static final float ColliderBottomWidth = 80;
-		public static final float ColliderBottomHeight = 50;
+		public static final float Width = 111.25f/100;
+		public static final float Height = 62.25f/100;
 	}
 	
 	public interface Camera {

@@ -11,6 +11,11 @@ public class DecalComponent extends PooledComponent {
 	/** Ignore {@link Transform#orientation} by looking at camera. */
 	public boolean lookAtCamera = true;
 	
+	public DecalComponent set(Decal decal) {
+		this.decal = decal;
+		return this;
+	}
+	
 	@Override
 	protected void reset() {
 		decal = null;

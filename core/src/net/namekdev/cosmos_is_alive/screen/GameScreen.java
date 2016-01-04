@@ -39,9 +39,6 @@ public class GameScreen extends BaseScreen<GameScreen> {
 	public GameScreen init(MyNGame game) {
 		super.init(game);
 
-		EntityFactory entityFactory = new EntityFactory();
-		entityFactory.assets = game.getAssets();
-
 //		EntityTrackerServer entityTrackerServer = new EntityTrackerServer();
 //		entityTrackerServer.start();
 
@@ -50,7 +47,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 //			.with(new EntityTracker(new EntityTrackerMainWindow()))
 //			.with(new ExtendedComponentMapperPlugin())
 			.with(new AspectHelpers())
-			.with(entityFactory)
+			.with(new EntityFactory())
 			.with(new WorldInitManager())
 			.with(new TagManager())
 

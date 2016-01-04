@@ -26,12 +26,12 @@ public class MyNGame extends ApplicationAdapter {
 
 		pushScreen(gameScreen);
 
-		gameScreen.render(0f);
+		/*gameScreen.render(0f);
 		pushScreen(new IntroScreen(new Runnable() {
 			public void run() {
 				pushScreen(new InstructionScreen(null).init(MyNGame.this));
 			}
-		}).init(this));
+		}).init(this));*/
 	}
 
 	@Override

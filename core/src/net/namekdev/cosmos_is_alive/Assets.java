@@ -24,11 +24,11 @@ public class Assets {
 		assets = new AssetManager();
 		assets.load(TEXTURES_ATLAS, TextureAtlas.class);
 		assets.finishLoading();
-		
+
 		textures = assets.get(TEXTURES_ATLAS);
-		intro = textures.findRegion("intro");	
-		instruction = textures.findRegion("instruction");	
-		playerTex = textures.findRegion("player");	
+		intro = textures.findRegion("intro");
+		instruction = textures.findRegion("instruction");
+		playerTex = textures.findRegion("star_fish");
 	}
 
 }

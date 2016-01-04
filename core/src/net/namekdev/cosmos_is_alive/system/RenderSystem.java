@@ -13,6 +13,7 @@ import net.namekdev.cosmos_is_alive.system.render.renderers.SpriteRenderer;
 import com.artemis.Aspect;
 import com.artemis.AspectSubscriptionManager;
 import com.artemis.BaseEntitySystem;
+import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntitySubscription;
 import com.artemis.EntitySubscription.SubscriptionListener;
@@ -33,15 +34,15 @@ import com.badlogic.gdx.utils.LongArray;
  */
 public class RenderSystem extends BaseEntitySystem {
 //	private M<Colored> mColored;
-	private M<Layer> mLayer;
+	private ComponentMapper<Layer> mLayer;
 //	private M<Origin> mOrigin;
 //	private M<Pos> mPos;
 //	private M<PosChild> mPosChild;
-	private M<Renderable> mRenderable;
-	private M<RenderableChild> mRenderableChild;
+	private ComponentMapper<Renderable> mRenderable;
+	private ComponentMapper<RenderableChild> mRenderableChild;
 //	private M<Rotation> mRotation;
 //	private M<Scale> mScale;
-	private M<ZOrder> mZOrder;
+	private ComponentMapper<ZOrder> mZOrder;
 
 	private CameraSystem cameraSystem;
 
@@ -147,8 +148,7 @@ public class RenderSystem extends BaseEntitySystem {
 		sprites.setProjectionMatrix(cameraSystem.camera.combined);
 
 		Gdx.gl.glClearColor(0, 0, 1, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
 		
 		IRenderer lastRenderer = null;
@@ -164,7 +164,7 @@ public class RenderSystem extends BaseEntitySystem {
 			}
 
 			for (int j = 0; j < renderers.length; ++j) {
-				final boolean hasRenderer = ((renderable.type >> j) & 1) == 1;
+				final boolean hasRenderer = j == renderable.type;
 				
 				if (hasRenderer) {
 					IRenderer renderer = renderers[j];

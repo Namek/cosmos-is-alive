@@ -38,7 +38,7 @@ public class PlayerStateSystem extends BaseSystem {
 
 	Input input;
 
-	ActionTimer walkTimer = new ActionTimer(C.Player.WalkStepDuration);
+//	ActionTimer walkTimer = new ActionTimer(C.Player.WalkStepDuration);
 
 
 	@Override
