@@ -182,10 +182,10 @@ public class RenderSystem extends BaseEntitySystem {
 					renderer.draw(e);
 				}
 			}
-			
-			if (lastRenderer != null) {
-				lastRenderer.end();
-			}
+		}
+		
+		if (lastRenderer != null) {
+			lastRenderer.end();
 		}
 	}
 
