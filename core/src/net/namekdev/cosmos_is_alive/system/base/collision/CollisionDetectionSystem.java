@@ -156,6 +156,12 @@ public class CollisionDetectionSystem extends EntitySystem {
 		return overlaps;
 	}
 
+	public boolean checkOverlap(int entity1Id, int entity2Id) {
+		Collider collider1 = mCollider.get(entity1Id);
+		Collider collider2 = mCollider.get(entity2Id);
+		return checkOverlap(entity1Id, collider1, entity2Id, collider2);
+	}
+
 	@Override
 	public void removed(Entity entity) {
 		phases.clear(entity.getId());

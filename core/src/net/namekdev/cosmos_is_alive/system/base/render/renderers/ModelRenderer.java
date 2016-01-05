@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 
-@Wire
 public class ModelRenderer implements IRenderer {
 	ComponentMapper<ModelSetComponent> mModelSet;
 	ComponentMapper<Shaders> mShaders;
@@ -32,7 +31,7 @@ public class ModelRenderer implements IRenderer {
 	public void initialize() {
 		environment = new Environment();
         environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1f));
-        environment.set(new ColorAttribute(ColorAttribute.Fog, 0, 0, 0, 1f));
+//        environment.set(new ColorAttribute(ColorAttribute.Fog, 0, 0, 0, 1f));
         directionalLight = new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f);
         environment.add(directionalLight);
 	}

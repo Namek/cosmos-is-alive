@@ -46,7 +46,7 @@ public class InputSystem extends BaseSystem {
 			else performRotation = false;
 
 			if (performRotation) {
-				playerSystem.getPlayerPosition(playerPosition);
+				playerSystem.getShipPosition(playerPosition);
 				cameraSystem.animateRotationAroundBy(playerPosition, angle, tmpAxis);
 				rotationBlocker.start();
 			}

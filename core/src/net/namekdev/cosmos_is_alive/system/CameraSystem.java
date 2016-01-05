@@ -33,8 +33,7 @@ public class CameraSystem extends BaseSystem {
 
 	@Override
 	protected void initialize() {
-		Gdx.input.setCursorCatched(true);
-		camera.position.set(0, 0, 3);
+		camera.position.set(0, 0, 5f);
 		camera.far = 1000;
 		camera.near = 0.1f;
 		camera.update(true);
@@ -45,9 +44,13 @@ public class CameraSystem extends BaseSystem {
 		float dt = world.getDelta();
 
 		if (freeLookEnabled) {
+			Gdx.input.setCursorCatched(true);
 			camera.rotate(-Gdx.input.getDeltaX()*0.1f, 0, 1, 0);
 			camera.rotate(getRightVector(tmpAxis), -Gdx.input.getDeltaY()*0.1f);
 			camera.update();
+		}
+		else {
+			Gdx.input.setCursorCatched(false);
 		}
 
 //		camera.position.set(offset.x, offset.y, offset.z);

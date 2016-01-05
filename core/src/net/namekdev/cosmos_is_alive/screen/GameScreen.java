@@ -1,10 +1,9 @@
 package net.namekdev.cosmos_is_alive.screen;
 
-import net.mostlyoriginal.api.event.common.EventSystem;
 import net.mostlyoriginal.api.event.common.Subscribe;
-import net.mostlyoriginal.api.plugin.extendedcomponentmapper.ExtendedComponentMapperPlugin;
-//import net.namekdev.entity_tracker.EntityTracker;
-//import net.namekdev.entity_tracker.network.EntityTrackerServer;
+import net.namekdev.entity_tracker.EntityTracker;
+import net.namekdev.entity_tracker.network.EntityTrackerServer;
+import net.namekdev.entity_tracker.ui.EntityTrackerMainWindow;
 import net.namekdev.cosmos_is_alive.MyNGame;
 import net.namekdev.cosmos_is_alive.component.GameState;
 import net.namekdev.cosmos_is_alive.enums.C;
@@ -16,9 +15,12 @@ import net.namekdev.cosmos_is_alive.manager.WorldInitManager;
 import net.namekdev.cosmos_is_alive.system.CameraSystem;
 import net.namekdev.cosmos_is_alive.system.GameStateSystem;
 import net.namekdev.cosmos_is_alive.system.InputSystem;
+import net.namekdev.cosmos_is_alive.system.OrbitSystem;
 import net.namekdev.cosmos_is_alive.system.PlayerStateSystem;
 import net.namekdev.cosmos_is_alive.system.SchedulerSystem;
 import net.namekdev.cosmos_is_alive.system.TweenSystem;
+import net.namekdev.cosmos_is_alive.system.base.collision.CollisionDetectionSystem;
+import net.namekdev.cosmos_is_alive.system.base.events.EventSystem;
 import net.namekdev.cosmos_is_alive.system.base.render.RenderSystem;
 
 import com.artemis.BaseSystem;
@@ -28,10 +30,6 @@ import com.artemis.WorldConfiguration;
 import com.artemis.WorldConfigurationBuilder;
 import com.artemis.managers.TagManager;
 import com.artemis.utils.Bag;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 
 public class GameScreen extends BaseScreen<GameScreen> {
 	World world;
@@ -45,8 +43,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 
 		WorldConfiguration cfg = new WorldConfigurationBuilder()
 //			.with(new EntityTracker(entityTrackerServer))
-//			.with(new EntityTracker(new EntityTrackerMainWindow()))
-//			.with(new ExtendedComponentMapperPlugin())
+			.with(new EntityTracker(new EntityTrackerMainWindow()))
 			.with(new AspectHelpers())
 			.with(new EntityFactory())
 			.with(new WorldInitManager())
@@ -57,7 +54,8 @@ public class GameScreen extends BaseScreen<GameScreen> {
 			.with(new TweenSystem())
 			.with(new GameStateSystem())
 			.with(new PlayerStateSystem())
-//			.with(new CollisionDetectionSystem())
+			.with(new OrbitSystem())
+			.with(new CollisionDetectionSystem())
 
 			.with(new CameraSystem())
 			.with(new RenderSystem())

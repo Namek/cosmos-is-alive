@@ -133,8 +133,8 @@ project(":core") {
         compile "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion"
         
         // Entity Tracker
-        //compile "net.namekdev.entity_tracker:artemis-entity-tracker:0.3.0"
-        //compile "net.namekdev.entity_tracker:artemis-entity-tracker-gui:0.3.0"
+        compile "net.namekdev.entity_tracker:artemis-entity-tracker:0.3.0"
+        compile "net.namekdev.entity_tracker:artemis-entity-tracker-gui:0.3.0"
     }
 }
 

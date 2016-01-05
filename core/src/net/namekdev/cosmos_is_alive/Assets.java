@@ -20,6 +20,8 @@ public class Assets {
 
 	public TextureAtlas planets;
 	public TextureRegion planetEarth;
+	public TextureRegion planetSaturn;
+	public TextureRegion planetNeptune;
 
 
 	public void loadAll() {
@@ -37,7 +39,9 @@ public class Assets {
 		stars = textures.findRegion("stars");
 
 		planets = assets.get(PLANET_TEXTURES_ATLAS);
-		planetEarth = planets.findRegion("planet_earth");
+		planetEarth = planets.findRegion("earth_clouds");
+		planetSaturn = planets.findRegion("saturn");
+		planetNeptune = planets.findRegion("neptune");
 	}
 
 }
