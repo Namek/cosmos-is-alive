@@ -2,8 +2,8 @@ package net.namekdev.cosmos_is_alive.enums;
 
 public interface C {
 	public interface Player {
-		public static final float Width = 111.25f/100;
-		public static final float Height = 62.25f/100;
+		public static final float Width = 111.25f/50;
+		public static final float Height = 62.25f/50;
 	}
 
 	public interface Camera {
@@ -12,11 +12,13 @@ public interface C {
 		public static final float ShakeHeightMin = 1;
 		public static final float ShakeHeightMax = 3;
 
+		public static final float MinPerspective = 0.04f;
+		public static final float MaxPerspective = 0.1f;
 		public static final float RotationDuration = 0.5f;
 	}
 
 	public interface World {
-		public static final float BoxSize = 256*4;
+		public static final float BoxSize = 80;
 	}
 
 	public interface Levels {

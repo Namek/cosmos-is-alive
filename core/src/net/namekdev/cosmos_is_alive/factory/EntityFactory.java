@@ -80,13 +80,9 @@ public class EntityFactory extends PassiveSystem {
 		return player;
 	}
 
-	public void createStars() {
+	public void createStars(float mapWidth, float mapHeight, float mapDepth) {
 		Entity stars = null;
 		EntityEdit e = null;
-
-		final float mapWidth = C.World.BoxSize;
-		final float mapHeight = C.World.BoxSize;
-		final float mapDepth = C.World.BoxSize;
 
 		// front
 		stars = world.createEntity();

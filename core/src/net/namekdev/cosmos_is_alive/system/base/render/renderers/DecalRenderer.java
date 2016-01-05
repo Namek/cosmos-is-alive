@@ -2,25 +2,25 @@ package net.namekdev.cosmos_is_alive.system.base.render.renderers;
 
 import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.DecalComponent;
+import net.namekdev.cosmos_is_alive.util.MixedProjectionCamera;
 
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.Wire;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 
 public class DecalRenderer implements IRenderer {
 	private ComponentMapper<DecalComponent> mDecal;
 	private ComponentMapper<Transform> mTransform;
-	
-	@Wire PerspectiveCamera camera;
+
+	@Wire MixedProjectionCamera camera;
 	@Wire DecalBatch batch;
 
 
 	@Override
 	public void initialize() {
 	}
-	
+
 	@Override
 	public Object getBatch() {
 		return batch;

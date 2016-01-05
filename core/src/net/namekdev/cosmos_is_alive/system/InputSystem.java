@@ -39,6 +39,10 @@ public class InputSystem extends BaseSystem {
 				angle = -90;
 				cameraSystem.getRightVector(tmpAxis);
 			}
+			else if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
+				angle = 90;
+				cameraSystem.getUpVector(tmpAxis);
+			}
 			else if (Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
 				angle = -90;
 				cameraSystem.getUpVector(tmpAxis);

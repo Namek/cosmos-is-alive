@@ -7,14 +7,18 @@ import net.mostlyoriginal.api.operation.common.TemporalOperation;
 
 public abstract class TemporalDeltaOperation extends TemporalOperation {
 	protected float previousPercentage = 0;
-	
+
 	public TemporalDeltaOperation() {
 	}
-	
+
 	public TemporalDeltaOperation(Interpolation interpolation) {
 		super.interpolation = interpolation;
 	}
-	
+
+	public TemporalDeltaOperation(float duration) {
+		setDuration(duration);
+	}
+
 	public TemporalDeltaOperation(Interpolation interpolation, float duration) {
 		super.interpolation = interpolation;
 		setDuration(duration);

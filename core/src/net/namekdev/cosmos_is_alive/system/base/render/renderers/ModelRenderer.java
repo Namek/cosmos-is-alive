@@ -4,10 +4,10 @@ import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.ModelSetComponent;
 import net.namekdev.cosmos_is_alive.component.render.Scale;
 import net.namekdev.cosmos_is_alive.component.render.Shaders;
+import net.namekdev.cosmos_is_alive.util.MixedProjectionCamera;
 
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.Wire;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -21,7 +21,7 @@ public class ModelRenderer implements IRenderer {
 	ComponentMapper<Scale> mScale;
 
 	@Wire ModelBatch modelBatch;
-	@Wire PerspectiveCamera camera;
+	@Wire MixedProjectionCamera camera;
 
 	Environment environment;
 	DirectionalLight directionalLight;
