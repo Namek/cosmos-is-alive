@@ -35,9 +35,9 @@ public class RenderSystem extends BaseEntitySystem {
 	private ComponentMapper<Renderable> mRenderable;
 	private ComponentMapper<RenderableChild> mRenderableChild;
 	private ComponentMapper<ZOrder> mZOrder;
-	
+
 	private IRenderer[] renderers;
-	private IRenderer lastRenderer; 
+	private IRenderer lastRenderer;
 
 	private LongArray sorted = new LongArray(100);
 	private int renderablesCount = 0;
@@ -78,12 +78,12 @@ public class RenderSystem extends BaseEntitySystem {
 		renderers[Renderable.MODEL] = new ModelRenderer();
 		renderers[Renderable.DECAL] = new DecalRenderer();
 		renderers[Renderable.SPRITE] = new SpriteRenderer();
-		
+
 		for (IRenderer renderer : renderers) {
 			world.inject(renderer);
 			renderer.initialize();
 		}
-		
+
 		AspectSubscriptionManager subscriptions = world.getAspectSubscriptionManager();
 		EntitySubscription renderableSub = subscriptions.get(Aspect.all(Renderable.class));
 		EntitySubscription renderableChildSub = subscriptions.get(Aspect.all(RenderableChild.class));
@@ -116,13 +116,13 @@ public class RenderSystem extends BaseEntitySystem {
 				dirtyOrder = true;
 			}
 		});
-		
+
 		customRendererSub.addSubscriptionListener(new SubscriptionListener() {
 			@Override
 			public void inserted(IntBag entities) {
 				final int n = entities.size();
 				final int[] ids = entities.getData();
-				
+
 				for (int i = 0; i < n; ++i) {
 					IRenderer renderer = mCustomRenderer.get(ids[i]).renderer;
 					world.inject(renderer);
@@ -148,13 +148,13 @@ public class RenderSystem extends BaseEntitySystem {
 		Gdx.gl.glClearColor(0, 0, 1, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-		
+
 		lastRenderer = null;
 
 		final long[] metas = sorted.items;
 		final int n = sorted.size;
 		for (int i = 0; i < n; ++i) {
-			final int e = (int)(metas[i] & ((1 << ENTITY_ID_BITS_COUNT) - 1));
+			final int e = (int)(metas[i] & (((long)1 << (ENTITY_ID_BITS_COUNT)) - 1));
 
 			Renderable renderable = mRenderable.get(e);
 
@@ -164,7 +164,7 @@ public class RenderSystem extends BaseEntitySystem {
 
 			for (int j = 0; j < renderers.length; ++j) {
 				final boolean hasRenderer = j == renderable.type;
-				
+
 				if (hasRenderer) {
 					IRenderer renderer = renderers[j];
 					render(e, renderer);
@@ -177,12 +177,12 @@ public class RenderSystem extends BaseEntitySystem {
 				render(e, renderer);
 			}
 		}
-		
+
 		if (lastRenderer != null) {
 			lastRenderer.end();
 		}
 	}
-	
+
 	private void render(int entityId, IRenderer renderer) {
 		if (lastRenderer == null) {
 			renderer.begin();
@@ -193,7 +193,7 @@ public class RenderSystem extends BaseEntitySystem {
 			renderer.begin();
 			lastRenderer = renderer;
 		}
-		
+
 		renderer.draw(entityId);
 	}
 

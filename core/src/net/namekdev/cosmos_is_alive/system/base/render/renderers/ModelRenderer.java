@@ -1,8 +1,8 @@
 package net.namekdev.cosmos_is_alive.system.base.render.renderers;
 
-import net.namekdev.cosmos_is_alive.component.base.Dimensions;
 import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.ModelSetComponent;
+import net.namekdev.cosmos_is_alive.component.render.Scale;
 import net.namekdev.cosmos_is_alive.component.render.Shaders;
 
 import com.artemis.ComponentMapper;
@@ -19,11 +19,11 @@ public class ModelRenderer implements IRenderer {
 	ComponentMapper<ModelSetComponent> mModelSet;
 	ComponentMapper<Shaders> mShaders;
 	ComponentMapper<Transform> mTransform;
-	ComponentMapper<Dimensions> mDimensions;
-	
+	ComponentMapper<Scale> mScale;
+
 	@Wire ModelBatch modelBatch;
 	@Wire PerspectiveCamera camera;
-	
+
 	Environment environment;
 	DirectionalLight directionalLight;
 
@@ -36,7 +36,7 @@ public class ModelRenderer implements IRenderer {
         directionalLight = new DirectionalLight().set(1f, 1f, 1f, -1f, -0.8f, -0.2f);
         environment.add(directionalLight);
 	}
-	
+
 	@Override
 	public Object getBatch() {
 		return modelBatch;
@@ -62,15 +62,15 @@ public class ModelRenderer implements IRenderer {
 
 		Transform transform = mTransform.get(e);
 		Shaders shaders = mShaders.getSafe(e);
-		Dimensions dims = mDimensions.getSafe(e);
+		Scale scale = mScale.getSafe(e);
 
 		for (int i = 0; i < models.instances.length; ++i) {
 			ModelInstance model = models.instances[i];
 
 			transform.toMatrix4(model.transform);
 
-			if (dims != null) {
-				model.transform.scale(dims.dimensions.x, dims.dimensions.y, dims.dimensions.z);
+			if (scale != null) {
+				model.transform.scale(scale.scale.x, scale.scale.y, scale.scale.z);
 			}
 
 			if (shaders == null) {
