@@ -1,6 +1,6 @@
 package net.namekdev.cosmos_is_alive.system.base.collision;
 
-import static net.namekdev.cosmos_is_alive.system.base.collision.ColliderType.BOUNDING_BOX;
+import static net.namekdev.cosmos_is_alive.system.base.collision.ColliderType.*;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,6 +16,7 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Wire;
 import com.artemis.utils.IntBag;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -40,9 +41,10 @@ public class CollisionDetectionSystem extends EntitySystem {
 
 	public final CollisionGroupsRelations relations;
 	private final CollisionPhases phases = new CollisionPhases();
-	private final Vector3 min = new Vector3(), max = new Vector3();
-	private final BoundingBox box1 = new BoundingBox(), box2 = new BoundingBox();
-	private final Matrix4 tmpMat = new Matrix4();
+	protected final Vector3 min = new Vector3(), max = new Vector3();
+	protected final BoundingBox box1 = new BoundingBox(), box2 = new BoundingBox();
+	protected final Circle circle1 = new Circle(), circle2 = new Circle();
+	protected final Matrix4 tmpMat = new Matrix4();
 
 	public boolean eventDispatchingEnabled;
 
@@ -147,10 +149,11 @@ public class CollisionDetectionSystem extends EntitySystem {
 		if (collider1.colliderType == collider2.colliderType) {
 			switch (collider1.colliderType) {
 				case BOUNDING_BOX: overlaps = box1.intersects(box2);	break;
+//				case CIRCLE: overlaps =
 			}
 		}
 		else {
-			throw new Error("Currently there is only one collider type supported!");
+			throw new Error("Those collider types are not supported together.");
 		}
 
 		return overlaps;

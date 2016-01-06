@@ -20,7 +20,7 @@ import net.namekdev.cosmos_is_alive.system.MovementSystem;
 import net.namekdev.cosmos_is_alive.system.OrbitSystem;
 import net.namekdev.cosmos_is_alive.system.PlayerStateSystem;
 import net.namekdev.cosmos_is_alive.system.TweenSystem;
-import net.namekdev.cosmos_is_alive.system.base.collision.CollisionDetectionSystem;
+import net.namekdev.cosmos_is_alive.system.CollisionSystem;
 import net.namekdev.cosmos_is_alive.system.base.events.EventSystem;
 import net.namekdev.cosmos_is_alive.system.base.render.RenderSystem;
 
@@ -57,7 +57,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 			.with(new MovementSystem())
 			.with(new PlayerStateSystem())
 			.with(new OrbitSystem())
-			.with(new CollisionDetectionSystem())
+			.with(new CollisionSystem())
 
 			.with(new CameraSystem())
 			.with(new RenderSystem())

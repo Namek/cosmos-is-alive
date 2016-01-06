@@ -6,7 +6,10 @@ import net.namekdev.cosmos_is_alive.component.*;
 import net.namekdev.cosmos_is_alive.component.base.*;
 import net.namekdev.cosmos_is_alive.component.render.*;
 import net.namekdev.cosmos_is_alive.enums.C;
+import net.namekdev.cosmos_is_alive.enums.CollisionGroups;
 import net.namekdev.cosmos_is_alive.enums.Tags;
+import net.namekdev.cosmos_is_alive.system.base.collision.Collider;
+import net.namekdev.cosmos_is_alive.system.base.collision.ColliderType;
 
 import com.artemis.Entity;
 import com.artemis.EntityEdit;
@@ -80,6 +83,7 @@ public class EntityFactory extends PassiveSystem {
 			.assetRotation.setEulerAngles(0, 180, 180);
 		e.create(Speed.class);
 		e.create(Scale.class).set(2f);
+		e.create(Collider.class).setup(CollisionGroups.PLAYER_2D, ColliderType.CIRCLE);
 
 		return player;
 	}
@@ -139,6 +143,7 @@ public class EntityFactory extends PassiveSystem {
 		e.create(Dimensions.class).set(size, size, size);
 		e.create(Transform.class).xyz(x, y, z);
 		e.create(Orbit.class).set(orbitAltitude, Vector3.X, Vector3.Y);
+		e.create(Collider.class).setup(CollisionGroups.PLANETS_2D, ColliderType.CIRCLE);
 
 		return planet;
 	}
