@@ -2,6 +2,7 @@ package net.namekdev.cosmos_is_alive.system;
 
 import static net.namekdev.cosmos_is_alive.system.TweenSystem.EntityTweenAccessor.*;
 import static aurelienribon.tweenengine.TweenEquations.*;
+import static com.badlogic.gdx.Gdx.input;
 import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
 import net.namekdev.cosmos_is_alive.component.*;
 import net.namekdev.cosmos_is_alive.component.base.Transform;
@@ -30,10 +31,13 @@ public class PlayerStateSystem extends BaseSystem {
 	ComponentMapper<Transform> mTransform;
 
 	AspectHelpers aspects;
+	CameraSystem cameraSystem;
 	CollisionDetectionSystem collisions;
 	RenderSystem renderSystem;
 	TagManager tags;
 	TweenSystem tweens;
+
+	final Vector3 dir = new Vector3();
 
 
 	@Override
@@ -46,7 +50,13 @@ public class PlayerStateSystem extends BaseSystem {
 		final Entity e = tags.getEntity(Tags.Player);
 		Transform transform = mTransform.get(e);
 
-		// TODO update movement
+
+		if (!cameraSystem.freeLookEnabled) {
+			if (input.isKeyPressed(Keys.W)) {
+				transform.moveForward(C.Player.NormalSpeed * dt);
+			}
+//			else if (input.isKeyPressed(Keys.A))
+		}
 	}
 
 	public Entity getPlayer() {

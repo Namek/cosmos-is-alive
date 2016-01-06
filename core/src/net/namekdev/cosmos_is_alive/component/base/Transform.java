@@ -1,5 +1,7 @@
 package net.namekdev.cosmos_is_alive.component.base;
 
+import static java.lang.Math.*;
+
 import net.namekdev.cosmos_is_alive.system.base.PositionSystem;
 
 import com.artemis.PooledComponent;
@@ -36,6 +38,7 @@ public class Transform extends PooledComponent {
 
 	private static final Vector3 tmpVect = new Vector3();
 	private static final Vector3 tmpVect2 = new Vector3();
+	private static final Vector3 tmpVect3 = new Vector3();
 	private static final Quaternion tmpQuat = new Quaternion();
 
 
@@ -51,8 +54,23 @@ public class Transform extends PooledComponent {
 	/** Defines logical orientation due to 3D vector {@link #DEFAULT_DIRECTION} = {@code (0, 0, -1)}. */
 	public final Quaternion orientation = new Quaternion();
 
-	/** Defines visual orientation. Useful for fixing assets. */
-	public final Quaternion visualOrientation = new Quaternion();
+	/** Defines visual orientation displacement. Usually used for some movement animation. */
+	public final Quaternion orientationDisplacement = new Quaternion();
+
+	/** Defines asset rotation, it's always added to visual orientation.
+	 *  Should be a static value, it's a way to fix model orientation in runtime. */
+	public final Quaternion assetRotation = new Quaternion();
+
+
+
+	@Override
+	protected void reset() {
+		currentPos.setZero();
+		desiredPos.setZero();
+		displacement.setZero();
+		orientation.idt();
+		orientationDisplacement.idt();
+	}
 
 
 	/**
@@ -77,53 +95,42 @@ public class Transform extends PooledComponent {
 	 * Sets orientation by comparing it to {@link #DEFAULT_DIRECTION},
 	 * roll angle is set to zero.
 	 */
-	public void look(float dirX, float dirY, float dirZ) {
-		float roll = 0;
-		float pitch = (float)Math.asin(-dirY);
-		float yaw = MathUtils.atan2(dirX, dirZ);
-		orientation.setEulerAnglesRad(yaw, pitch, roll);//buggy, jitters every frame
+	public Transform look(float dirX, float dirY, float dirZ) {
+		final Vector3 u = DEFAULT_DIRECTION;
+		final Vector3 v = tmpVect.set(dirX, dirY, dirZ).nor();
+		final Vector3 w = tmpVect2.set(u).crs(v);
 
-		// TODO this doesn't work!
-//		orientation.setFromCross(DEFAULT_DIRECTION, tmpVect.set(dirX, dirY, dirZ));
+		// Normally, we would finish this algorithm this way:
+		//   orientation.set(w.x, w.y, w.z, 1f + u.dot(v)).nor();
+		// but direction 0,0,1 is 180 degree to 0,0,-1 ant it breaks.
 
-/*
-		orientation.set(dirX, dirY, dirZ, 0);
-//		orientation.nor();
+	    float len = w.len2();
+	    float real_part = u.dot(v);
+	    if (len < 1.6e-12f && real_part < 0)
+	    {
+	    	if (abs(u.x) > abs(u.z)) {
+	    		w.set(-u.y, u.x, 0.f).scl((float)(1.0 / sqrt(u.y*u.y + u.x*u.x)));
+	    	}
+	    	else {
+	    		w.set(0.f, -u.z, u.y).scl((float)(1.0 / sqrt(u.y*u.y + u.z*u.z)));
+	    	}
 
+	    	orientation.set(w.x, w.y, w.z, 0);
+	    }
+	    else {
+		    real_part += sqrt(real_part*real_part + len);
+		    orientation.set(w.x, w.y, w.z, real_part).mul((float)(1.0 / sqrt(real_part*real_part + len)));
+	    }
 
-		orientation.idt();
-		// yaw - without Y axis
-		tmpVect.set(dirX, 0, dirZ).nor();
-		if (tmpVect.dot(DEFAULT_DIRECTION) != 0f) {
-			tmpQuat.setFromCross(DEFAULT_DIRECTION, tmpVect);
-			orientation.mul(tmpQuat);
-		}
-
-		// pitch - without X axis
-		tmpVect.set(0, dirY, dirZ).nor();
-		float dot = tmpVect.dot(DEFAULT_DIRECTION);
-		if (dot != 0f) {
-			if (dot < 0) {
-				tmpQuat.idt();
-			}
-			else {
-				tmpQuat.setFromCross(DEFAULT_DIRECTION, tmpVect);
-			}
-			orientation.mul(tmpQuat);
-
-			pitch = orientation.getPitch();
-			if (pitch != 0) {
-				System.out.println(pitch);
-			}
-		}*/
+	    return this;
 	}
 
 	/**
 	 * Sets orientation by comparing it to {@link #DEFAULT_DIRECTION},
 	 * roll angle is set to zero.
 	 */
-	public void look(Vector3 dir) {
-		look(dir.x, dir.y, dir.z);
+	public Transform look(Vector3 dir) {
+		return look(dir.x, dir.y, dir.z);
 	}
 
 	/**
@@ -175,11 +182,23 @@ public class Transform extends PooledComponent {
 		return outUp.set(dir).crs(UP_VECTOR).crs(dir);
 	}
 
-	@Override
-	protected void reset() {
-		currentPos.setZero();
-		desiredPos.setZero();
-		displacement.setZero();
-		orientation.idt();
+	public void translate(Vector3 translation) {
+		desiredPos.add(translation);
+	}
+
+	public void moveForward(float length) {
+		translate(toDirection(tmpVect).scl(length));
+	}
+
+	public void moveBackward(float length) {
+		moveForward(-length);
+	}
+
+	public void moveRight(float length) {
+		translate(toRightDir(tmpVect3).scl(length));
+	}
+
+	public void moveLeft(float length) {
+		translate(toRightDir(tmpVect3).scl(-length));
 	}
 }

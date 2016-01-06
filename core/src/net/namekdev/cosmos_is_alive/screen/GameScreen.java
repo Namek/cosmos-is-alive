@@ -15,6 +15,7 @@ import net.namekdev.cosmos_is_alive.manager.WorldInitManager;
 import net.namekdev.cosmos_is_alive.system.CameraSystem;
 import net.namekdev.cosmos_is_alive.system.GameStateSystem;
 import net.namekdev.cosmos_is_alive.system.InputSystem;
+import net.namekdev.cosmos_is_alive.system.MovementSystem;
 import net.namekdev.cosmos_is_alive.system.OrbitSystem;
 import net.namekdev.cosmos_is_alive.system.PlayerStateSystem;
 import net.namekdev.cosmos_is_alive.system.SchedulerSystem;
@@ -53,6 +54,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 			.with(new InputSystem())
 			.with(new TweenSystem())
 			.with(new GameStateSystem())
+			.with(new MovementSystem())
 			.with(new PlayerStateSystem())
 			.with(new OrbitSystem())
 			.with(new CollisionDetectionSystem())

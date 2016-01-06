@@ -72,11 +72,12 @@ public class EntityFactory extends PassiveSystem {
 		EntityEdit e = player.edit();
 		tags.register(Tags.Player, player);
 
-//		setDecal(e, assets.playerTex, C.Player.Width, C.Player.Height)
-//			.lookAtCamera = true;
 		setModel(e, new ModelInstance(assets.ship));
 		e.create(Dimensions.class).set(C.Player.Width, C.Player.Height, 1);
-		e.create(Transform.class).xyz(x, y, z).visualOrientation.setEulerAngles(0, 270, 180);
+		e.create(Transform.class)
+			.xyz(x, y, z)
+			.look(0, 1, 0)
+			.assetRotation.setEulerAngles(0, 180, 180);
 		e.create(Speed.class);
 		e.create(Scale.class).set(2f);
 

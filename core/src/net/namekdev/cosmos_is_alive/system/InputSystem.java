@@ -1,5 +1,7 @@
 package net.namekdev.cosmos_is_alive.system;
 
+import static com.badlogic.gdx.Gdx.input;
+
 import net.namekdev.cosmos_is_alive.enums.C;
 import net.namekdev.cosmos_is_alive.util.ActionTimer;
 import net.namekdev.cosmos_is_alive.util.ActionTimer.TimerState;
@@ -16,34 +18,34 @@ public class InputSystem extends BaseSystem {
 	private final Vector3 tmpAxis = new Vector3();
 	private final Vector3 playerPosition = new Vector3();
 
-	private ActionTimer rotationBlocker = new ActionTimer(C.Camera.RotationDuration);
+	private ActionTimer movementBlocker = new ActionTimer(C.Camera.RotationDuration);
 
 
 	@Override
 	protected void processSystem() {
 		final float dt = world.getDelta();
 
-		if (Gdx.input.isKeyJustPressed(Keys.C)) {
+		if (input.isKeyJustPressed(Keys.C)) {
 			cameraSystem.freeLookEnabled = !cameraSystem.freeLookEnabled;
 		}
 
-		if (rotationBlocker.update(dt) != TimerState.Active) {
+		if (movementBlocker.update(dt) != TimerState.Active) {
 			float angle = 0;
 			boolean performRotation = true;
 
-			if (Gdx.input.isKeyJustPressed(Keys.UP)) {
+			if (input.isKeyJustPressed(Keys.UP)) {
 				angle = 90;
 				cameraSystem.getRightVector(tmpAxis);
 			}
-			else if (Gdx.input.isKeyJustPressed(Keys.DOWN)) {
+			else if (input.isKeyJustPressed(Keys.DOWN)) {
 				angle = -90;
 				cameraSystem.getRightVector(tmpAxis);
 			}
-			else if (Gdx.input.isKeyJustPressed(Keys.LEFT)) {
+			else if (input.isKeyJustPressed(Keys.LEFT)) {
 				angle = 90;
 				cameraSystem.getUpVector(tmpAxis);
 			}
-			else if (Gdx.input.isKeyJustPressed(Keys.RIGHT)) {
+			else if (input.isKeyJustPressed(Keys.RIGHT)) {
 				angle = -90;
 				cameraSystem.getUpVector(tmpAxis);
 			}
@@ -52,7 +54,7 @@ public class InputSystem extends BaseSystem {
 			if (performRotation) {
 				playerSystem.getShipPosition(playerPosition);
 				cameraSystem.animateRotationAroundBy(playerPosition, angle, tmpAxis);
-				rotationBlocker.start();
+				movementBlocker.start();
 			}
 		}
 	}

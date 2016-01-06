@@ -4,6 +4,7 @@ public interface C {
 	public interface Player {
 		public static final float Width = 111.25f/50;
 		public static final float Height = 62.25f/50;
+		public static final float NormalSpeed = 4f;
 	}
 
 	public interface Camera {

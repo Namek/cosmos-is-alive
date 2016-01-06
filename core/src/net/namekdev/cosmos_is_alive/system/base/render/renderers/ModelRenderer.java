@@ -70,8 +70,10 @@ public class ModelRenderer implements IRenderer {
 			ModelInstance model = models.instances[i];
 
 			// orientation
-			transform.visualOrientation.toMatrix(tmpMat4.val);
 			transform.orientation.toMatrix(model.transform.val);
+			transform.orientationDisplacement.toMatrix(tmpMat4.val);
+			model.transform.mul(tmpMat4);
+			transform.assetRotation.toMatrix(tmpMat4.val);
 			model.transform.mul(tmpMat4);
 
 			// translation
