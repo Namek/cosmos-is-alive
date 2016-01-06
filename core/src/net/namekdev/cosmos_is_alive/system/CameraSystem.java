@@ -31,6 +31,7 @@ public class CameraSystem extends BaseSystem {
 
 	private final Vector3 tmpScreenPos = new Vector3();
 	private final Vector3 tmpAxis = new Vector3();
+	private final Vector3 tmpDir = new Vector3();
 
 
 	@Override
@@ -48,13 +49,39 @@ public class CameraSystem extends BaseSystem {
 		float dt = world.getDelta();
 
 		if (freeLookEnabled) {
-			Gdx.input.setCursorCatched(true);
+			input.setCursorCatched(true);
 			camera.rotate(-Gdx.input.getDeltaX()*0.1f, 0, 1, 0);
 			camera.rotate(getRightVector(tmpAxis), -Gdx.input.getDeltaY()*0.1f);
+
+			if (input.isKeyPressed(Keys.W)) camera.translate(camera.direction);
+			if (input.isKeyPressed(Keys.S)) camera.translate(tmpDir.set(camera.direction).scl(-1));
+			if (input.isKeyPressed(Keys.A)) camera.translate(getRightVector(tmpDir).scl(-1));
+			if (input.isKeyPressed(Keys.D)) camera.translate(getRightVector(tmpDir));
+
+			// align direction to closest axis
+			if (input.isKeyJustPressed(Keys.E)) {
+				double angleX = Math.acos(camera.direction.dot(Vector3.X));
+				double angleY = Math.acos(camera.direction.dot(Vector3.Y));
+				double angleZ = Math.acos(camera.direction.dot(Vector3.Z));
+
+				double smallest = angleX;
+				Vector3 axis = Vector3.X;
+				if (angleY < smallest) {
+					smallest = angleY;
+					axis = Vector3.Y;
+				}
+				if (angleZ < smallest) {
+					smallest = angleZ;
+					axis = Vector3.Z;
+				}
+
+				camera.direction.set(axis);
+			}
+
 			camera.update();
 		}
 		else {
-			Gdx.input.setCursorCatched(false);
+			input.setCursorCatched(false);
 		}
 
 		if (input.isKeyPressed(Keys.Z)) {

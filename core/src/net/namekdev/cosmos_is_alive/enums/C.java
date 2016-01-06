@@ -12,13 +12,13 @@ public interface C {
 		public static final float ShakeHeightMin = 1;
 		public static final float ShakeHeightMax = 3;
 
-		public static final float MinPerspective = 0.04f;
+		public static final float MinPerspective = 0.0f;
 		public static final float MaxPerspective = 0.1f;
-		public static final float RotationDuration = 0.5f;
+		public static final float RotationDuration = 0.9f;
 	}
 
 	public interface World {
-		public static final float BoxSize = 80;
+		public static final float BoxSize = 84;
 	}
 
 	public interface Levels {
