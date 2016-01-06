@@ -18,7 +18,8 @@ public interface C {
 	}
 
 	public interface World {
-		public static final float BoxSize = 84;
+		public static final float StarBoxSize = 150;
+		public static final float PlanetBoxSize = 84;
 	}
 
 	public interface Levels {

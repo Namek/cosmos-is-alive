@@ -4,6 +4,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g3d.Model;
 
 public class Assets {
 	private static final String BASIC_TEXTURES_ATLAS = "graphics/basic/pack.atlas";
@@ -11,6 +12,8 @@ public class Assets {
 
 	public BitmapFont font;
 	public AssetManager assets;
+
+	public Model ship;
 
 	public TextureAtlas textures;
 	public TextureRegion intro;
@@ -28,9 +31,12 @@ public class Assets {
 		font = new BitmapFont();
 
 		assets = new AssetManager();
+		assets.load("models/ship.g3db", Model.class);
 		assets.load(BASIC_TEXTURES_ATLAS, TextureAtlas.class);
 		assets.load(PLANET_TEXTURES_ATLAS, TextureAtlas.class);
 		assets.finishLoading();
+
+		ship = assets.get("models/ship.g3db", Model.class);
 
 		textures = assets.get(BASIC_TEXTURES_ATLAS);
 		intro = textures.findRegion("intro");

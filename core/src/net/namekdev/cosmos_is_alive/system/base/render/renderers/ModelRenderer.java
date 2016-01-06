@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.math.Matrix4;
 
 public class ModelRenderer implements IRenderer {
 	ComponentMapper<ModelSetComponent> mModelSet;
@@ -25,6 +26,8 @@ public class ModelRenderer implements IRenderer {
 
 	Environment environment;
 	DirectionalLight directionalLight;
+
+	private Matrix4 tmpMat4 = new Matrix4();
 
 
 	@Override
@@ -66,8 +69,15 @@ public class ModelRenderer implements IRenderer {
 		for (int i = 0; i < models.instances.length; ++i) {
 			ModelInstance model = models.instances[i];
 
-			transform.toMatrix4(model.transform);
+			// orientation
+			transform.visualOrientation.toMatrix(tmpMat4.val);
+			transform.orientation.toMatrix(model.transform.val);
+			model.transform.mul(tmpMat4);
 
+			// translation
+			model.transform.trn(transform.currentPos);
+
+			// scale
 			if (scale != null) {
 				model.transform.scale(scale.scale.x, scale.scale.y, scale.scale.z);
 			}

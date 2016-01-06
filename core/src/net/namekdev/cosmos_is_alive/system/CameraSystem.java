@@ -41,6 +41,7 @@ public class CameraSystem extends BaseSystem {
 		camera.near = 0.1f;
 		camera.zoom = 0.03f;
 		camera.perspectiveFactor = C.Camera.MinPerspective;
+		camera.fieldOfView = 30;
 		camera.update();
 	}
 

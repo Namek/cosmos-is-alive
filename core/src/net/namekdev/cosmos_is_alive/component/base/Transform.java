@@ -48,8 +48,11 @@ public class Transform extends PooledComponent {
 	/** Additional displacement to position. Usually used for graphics puroses, like head bobbing. */
 	public final Vector3 displacement = new Vector3();
 
-	/** Defines orientation due to 3D vector {@link #DEFAULT_DIRECTION} = {@code (0, 0, -1)}. */
+	/** Defines logical orientation due to 3D vector {@link #DEFAULT_DIRECTION} = {@code (0, 0, -1)}. */
 	public final Quaternion orientation = new Quaternion();
+
+	/** Defines visual orientation. Useful for fixing assets. */
+	public final Quaternion visualOrientation = new Quaternion();
 
 
 	/**
@@ -125,7 +128,7 @@ public class Transform extends PooledComponent {
 
 	/**
 	 * Gets {@link #currentPos}, {@link #direction} and {@link #up} into given Matrix.
-	 * Ignores {@link #displacement}.
+	 * Ignores {@link #displacement} and @{link #visualOrientation}.
 	 */
 	public Matrix4 toMatrix4(Matrix4 mat) {
 		orientation.toMatrix(mat.val);

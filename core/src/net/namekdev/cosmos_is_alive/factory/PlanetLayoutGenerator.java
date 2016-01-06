@@ -27,7 +27,7 @@ public class PlanetLayoutGenerator {
 		for (int ix = 0; ix < width; ++ix) {
 			for (int iy = 0; iy < height; ++iy) {
 				int maxNth = depth;
-				for (int iz = 0; iz < depth-1; ++iz, --maxNth) {
+				for (int iz = 0; iz < depth-1 && total > desiredTotal; ++iz, --maxNth) {
 					removeNthDeep(MathUtils.random(maxNth-1)+1, ix, iy);
 				}
 			}

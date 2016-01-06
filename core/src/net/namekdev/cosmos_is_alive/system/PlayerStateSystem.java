@@ -44,6 +44,7 @@ public class PlayerStateSystem extends BaseSystem {
 	protected void processSystem() {
 		float dt = world.getDelta();
 		final Entity e = tags.getEntity(Tags.Player);
+		Transform transform = mTransform.get(e);
 
 		// TODO update movement
 	}
