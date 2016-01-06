@@ -154,12 +154,12 @@ public class Transform extends PooledComponent {
 
 	public Vector3 toDirection(Vector3 outDir) {
 		outDir.set(DEFAULT_DIRECTION);
-		outDir.mul(orientation);
+		outDir.mul(orientation).nor();
 		return outDir;
 	}
 
 	public Vector3 toUpDir(Vector3 outUp) {
-		return directionToUp(toDirection(tmpVect), outUp);
+		return outUp.set(UP_VECTOR).mul(orientation).nor();
 	}
 
 	public Vector3 toRightDir(Vector3 outRight) {
@@ -200,5 +200,21 @@ public class Transform extends PooledComponent {
 
 	public void moveLeft(float length) {
 		translate(toRightDir(tmpVect3).scl(-length));
+	}
+
+	/** Rotates by the given angle around the given axis, with the axis attached to given point. */
+	public void rotateAround(Vector3 point, Vector3 axis, float angle) {
+		tmpVect.set(point);
+		tmpVect.sub(desiredPos);
+		translate(tmpVect);
+		rotate(axis, angle);
+		tmpVect.rotate(axis, angle);
+		translate(tmpVect.scl(-1f));
+	}
+
+	/** Rotates by the given angle around the given axis. */
+	public void rotate(Vector3 axis, float angle) {
+		tmpQuat.set(axis, angle);
+		orientation.mul(tmpQuat);
 	}
 }

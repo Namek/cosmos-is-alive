@@ -4,6 +4,8 @@ import static net.namekdev.cosmos_is_alive.system.TweenSystem.EntityTweenAccesso
 import static aurelienribon.tweenengine.TweenEquations.*;
 import static com.badlogic.gdx.Gdx.input;
 import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
+import net.namekdev.cosmos_is_alive.animation.TemporalDeltaOperation;
+import net.namekdev.cosmos_is_alive.animation.TemporalOperation;
 import net.namekdev.cosmos_is_alive.component.*;
 import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.ZOrder;
@@ -14,6 +16,7 @@ import net.namekdev.cosmos_is_alive.system.base.collision.CollisionDetectionSyst
 import net.namekdev.cosmos_is_alive.system.base.render.RenderSystem;
 import net.namekdev.cosmos_is_alive.util.ActionTimer;
 import net.namekdev.cosmos_is_alive.util.ActionTimer.TimerState;
+import net.namekdev.cosmos_is_alive.util.MixedProjectionCamera;
 import aurelienribon.tweenengine.Timeline;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenEquations;
@@ -25,6 +28,8 @@ import com.artemis.managers.TagManager;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerStateSystem extends BaseSystem {
@@ -34,10 +39,13 @@ public class PlayerStateSystem extends BaseSystem {
 	CameraSystem cameraSystem;
 	CollisionDetectionSystem collisions;
 	RenderSystem renderSystem;
+	SchedulerSystem scheduler;
 	TagManager tags;
 	TweenSystem tweens;
 
-	final Vector3 dir = new Vector3();
+	private final Vector3 dir = new Vector3();
+
+	private int nearPlanetId = -1;
 
 
 	@Override
@@ -63,6 +71,10 @@ public class PlayerStateSystem extends BaseSystem {
 		return tags.getEntity(Tags.Player);
 	}
 
+	public Transform getPlayerTransform() {
+		return mTransform.get(getPlayer());
+	}
+
 	public Vector3 getShipPosition(Vector3 outPosition) {
 		Transform transform = mTransform.get(getPlayer());
 		return outPosition.set(transform.currentPos);
@@ -70,6 +82,54 @@ public class PlayerStateSystem extends BaseSystem {
 
 	public Vector3 getShipDirection(Vector3 outDir) {
 		Transform transform = mTransform.get(getPlayer());
-		return transform.toRightDir(outDir).scl(-1);
+		return transform.toDirection(outDir);
+	}
+
+	public Vector3 getShipUpDirection(Vector3 outUp) {
+		Transform transform = mTransform.get(getPlayer());
+		return transform.toUpDir(outUp);
+	}
+
+	public boolean isPlayerAlive() {
+		return true;
+	}
+
+	public boolean tryRotateAroundPlanet(final float byDegrees, final Vector3 axis) {
+		if (nearPlanetId < 0) {
+			return false;
+		}
+
+		animateRotationAroundPlanet(byDegrees, axis);
+		return true;
+	}
+
+
+	private void animateRotationAroundPlanet(final float byDegrees, final Vector3 axis) {
+		final MixedProjectionCamera camera = cameraSystem.camera;
+		final Transform planetTransform = mTransform.get(nearPlanetId);
+		final Transform shipTransform = getPlayerTransform();
+
+		scheduler.parallel(
+			new TemporalDeltaOperation(Interpolation.sine, C.Camera.RotationDuration) {
+				@Override
+				public void update(float percentageDelta, Entity e) {
+					//camera.rotateAround(point, axis, percentageDelta * byDegrees);
+					//camera.update();
+
+					final float angle = percentageDelta * byDegrees;
+					shipTransform.rotateAround(planetTransform.currentPos, axis, angle);
+				}
+			},
+			new TemporalOperation(Interpolation.sine, C.Camera.RotationDuration) {
+				@Override
+				public void act(float percentage, Entity e) {
+					float p = (percentage <= 0.5f ? percentage : (1f - percentage)) * 2f;
+					camera.perspectiveFactor = MathUtils.lerp(
+						C.Camera.MinPerspective, C.Camera.MaxPerspective, p
+					);
+					camera.update();
+				}
+			}
+		);
 	}
 }

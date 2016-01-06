@@ -16,7 +16,6 @@ public class InputSystem extends BaseSystem {
 	PlayerStateSystem playerSystem;
 
 	private final Vector3 tmpAxis = new Vector3();
-	private final Vector3 playerPosition = new Vector3();
 
 	private ActionTimer movementBlocker = new ActionTimer(C.Camera.RotationDuration);
 
@@ -52,9 +51,9 @@ public class InputSystem extends BaseSystem {
 			else performRotation = false;
 
 			if (performRotation) {
-				playerSystem.getShipPosition(playerPosition);
-				cameraSystem.animateRotationAroundBy(playerPosition, angle, tmpAxis);
-				movementBlocker.start();
+				if (playerSystem.tryRotateAroundPlanet(angle, tmpAxis)) {
+					movementBlocker.start();
+				}
 			}
 		}
 	}

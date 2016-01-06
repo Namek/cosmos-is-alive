@@ -4,18 +4,19 @@ public interface C {
 	public interface Player {
 		public static final float Width = 111.25f/50;
 		public static final float Height = 62.25f/50;
-		public static final float NormalSpeed = 4f;
+		public static final float NormalSpeed = 12f;
 	}
 
 	public interface Camera {
+		public static final float DistanceToPlayer = 31f;
+		public static final float MinPerspective = 0.0f;
+		public static final float MaxPerspective = 0.1f;
+		public static final float RotationDuration = 0.9f;
+
 		public static final float ShakeWidthMin = 4;
 		public static final float ShakeWidthMax = 10;
 		public static final float ShakeHeightMin = 1;
 		public static final float ShakeHeightMax = 3;
-
-		public static final float MinPerspective = 0.0f;
-		public static final float MaxPerspective = 0.1f;
-		public static final float RotationDuration = 0.9f;
 	}
 
 	public interface World {

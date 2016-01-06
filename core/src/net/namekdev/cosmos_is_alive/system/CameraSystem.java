@@ -3,12 +3,15 @@ package net.namekdev.cosmos_is_alive.system;
 import static com.badlogic.gdx.Gdx.input;
 import net.namekdev.cosmos_is_alive.animation.TemporalDeltaOperation;
 import net.namekdev.cosmos_is_alive.animation.TemporalOperation;
+import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.enums.C;
+import net.namekdev.cosmos_is_alive.enums.Tags;
 import net.namekdev.cosmos_is_alive.util.ActionTimer;
 import net.namekdev.cosmos_is_alive.util.ActionTimer.TimerState;
 import net.namekdev.cosmos_is_alive.util.MixedProjectionCamera;
 
 import com.artemis.BaseSystem;
+import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Wire;
 import com.artemis.managers.TagManager;
@@ -20,6 +23,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class CameraSystem extends BaseSystem {
+	ComponentMapper<Transform> mTransform;
+
+	PlayerStateSystem playerSystem;
 	SchedulerSystem scheduler;
 	TagManager tags;
 
@@ -32,11 +38,12 @@ public class CameraSystem extends BaseSystem {
 	private final Vector3 tmpScreenPos = new Vector3();
 	private final Vector3 tmpAxis = new Vector3();
 	private final Vector3 tmpDir = new Vector3();
+	private final Vector3 tmpDist = new Vector3();
+	private final Vector3 tmpPos = new Vector3();
 
 
 	@Override
 	protected void initialize() {
-		camera.position.set(0, 0, 36f);
 		camera.far = 1000;
 		camera.near = 0.1f;
 		camera.zoom = 0.03f;
@@ -83,6 +90,18 @@ public class CameraSystem extends BaseSystem {
 		}
 		else {
 			input.setCursorCatched(false);
+
+			// While player is alive update camera position with the ship.
+			if (playerSystem.isPlayerAlive()) {
+				playerSystem.getShipUpDirection(tmpDir);
+				tmpDist.set(tmpDir).scl(C.Camera.DistanceToPlayer);
+				playerSystem.getShipPosition(tmpPos);
+				camera.position.set(tmpPos).add(tmpDist);
+				camera.lookAt(tmpPos);;
+				camera.update();
+				playerSystem.getShipDirection(camera.up);
+				camera.update();
+			}
 		}
 
 		if (input.isKeyPressed(Keys.Z)) {
@@ -95,8 +114,6 @@ public class CameraSystem extends BaseSystem {
 		camera.perspectiveFactor = MathUtils.clamp(
 			camera.perspectiveFactor, C.Camera.MinPerspective, C.Camera.MaxPerspective
 		);
-
-//		camera.position.set(offset.x, offset.y, offset.z);
 
 		// shake camera
 		if (shakeTimer.update(dt) == TimerState.Active) {
@@ -139,28 +156,6 @@ public class CameraSystem extends BaseSystem {
 				@Override
 				public void update(float percentageDelta, Entity e) {
 					camera.rotate(axis, percentageDelta * degrees);
-				}
-			}
-		);
-	}
-
-	public void animateRotationAroundBy(final Vector3 point, final float byDegrees, final Vector3 axis) {
-		scheduler.parallel(
-			new TemporalDeltaOperation(Interpolation.sine, C.Camera.RotationDuration) {
-				@Override
-				public void update(float percentageDelta, Entity e) {
-					camera.rotateAround(point, axis, percentageDelta * byDegrees);
-					camera.update();
-				}
-			},
-			new TemporalOperation(Interpolation.sine, C.Camera.RotationDuration) {
-				@Override
-				public void act(float percentage, Entity e) {
-					float p = (percentage <= 0.5f ? percentage : (1f - percentage)) * 2f;
-					camera.perspectiveFactor = MathUtils.lerp(
-						C.Camera.MinPerspective, C.Camera.MaxPerspective, p
-					);
-					camera.update();
 				}
 			}
 		);
