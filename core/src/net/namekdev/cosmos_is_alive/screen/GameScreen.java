@@ -1,5 +1,6 @@
 package net.namekdev.cosmos_is_alive.screen;
 
+import se.feomedia.orion.system.OperationSystem;
 import net.mostlyoriginal.api.event.common.Subscribe;
 import net.namekdev.entity_tracker.EntityTracker;
 import net.namekdev.entity_tracker.network.EntityTrackerServer;
@@ -18,7 +19,6 @@ import net.namekdev.cosmos_is_alive.system.InputSystem;
 import net.namekdev.cosmos_is_alive.system.MovementSystem;
 import net.namekdev.cosmos_is_alive.system.OrbitSystem;
 import net.namekdev.cosmos_is_alive.system.PlayerStateSystem;
-import net.namekdev.cosmos_is_alive.system.SchedulerSystem;
 import net.namekdev.cosmos_is_alive.system.TweenSystem;
 import net.namekdev.cosmos_is_alive.system.base.collision.CollisionDetectionSystem;
 import net.namekdev.cosmos_is_alive.system.base.events.EventSystem;
@@ -62,7 +62,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 			.with(new CameraSystem())
 			.with(new RenderSystem())
 //			.with(new CollisionDebugSystem())
-			.with(new SchedulerSystem())
+			.with(new OperationSystem())
 			.with(new EventSystem())
 			.build();
 

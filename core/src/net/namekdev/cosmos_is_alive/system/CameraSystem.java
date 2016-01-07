@@ -1,18 +1,16 @@
 package net.namekdev.cosmos_is_alive.system;
 
 import static com.badlogic.gdx.Gdx.input;
-import net.namekdev.cosmos_is_alive.animation.TemporalDeltaOperation;
-import net.namekdev.cosmos_is_alive.animation.TemporalOperation;
+import static net.namekdev.cosmos_is_alive.action.base.Operations.*;
+import net.namekdev.cosmos_is_alive.action.base.TemporalDeltaOperation.DeltaExecutor;
 import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.enums.C;
-import net.namekdev.cosmos_is_alive.enums.Tags;
 import net.namekdev.cosmos_is_alive.util.ActionTimer;
 import net.namekdev.cosmos_is_alive.util.ActionTimer.TimerState;
 import net.namekdev.cosmos_is_alive.util.MixedProjectionCamera;
 
 import com.artemis.BaseSystem;
 import com.artemis.ComponentMapper;
-import com.artemis.Entity;
 import com.artemis.annotations.Wire;
 import com.artemis.managers.TagManager;
 import com.badlogic.gdx.Gdx;
@@ -26,7 +24,6 @@ public class CameraSystem extends BaseSystem {
 	ComponentMapper<Transform> mTransform;
 
 	PlayerStateSystem playerSystem;
-	SchedulerSystem scheduler;
 	TagManager tags;
 
 	public @Wire MixedProjectionCamera camera;
@@ -93,7 +90,7 @@ public class CameraSystem extends BaseSystem {
 
 			// While player is alive update camera position with the ship.
 			if (playerSystem.isPlayerAlive()) {
-				playerSystem.getShipUpDirection(tmpDir);
+				playerSystem.getShipUpVector(tmpDir);
 				tmpDist.set(tmpDir).scl(C.Camera.DistanceToPlayer);
 				playerSystem.getShipPosition(tmpPos);
 				camera.position.set(tmpPos).add(tmpDist);
@@ -151,13 +148,11 @@ public class CameraSystem extends BaseSystem {
 	}
 
 	public void animateRotationBy(final float degrees, final Vector3 axis) {
-		scheduler.schedule(
-			new TemporalDeltaOperation(Interpolation.sine, C.Camera.RotationDuration) {
-				@Override
-				public void update(float percentageDelta, Entity e) {
-					camera.rotate(axis, percentageDelta * degrees);
-				}
+		deltaOperation(C.Camera.RotationDuration, Interpolation.sine, new DeltaExecutor() {
+			@Override
+			public void act(float deltaTime, float deltaPercent) {
+				camera.rotate(axis, deltaPercent * degrees);
 			}
-		);
+		}).register(world);
 	}
 }

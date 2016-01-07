@@ -1,7 +1,6 @@
 package net.namekdev.cosmos_is_alive.component.base;
 
 import static java.lang.Math.*;
-
 import net.namekdev.cosmos_is_alive.system.base.PositionSystem;
 
 import com.artemis.PooledComponent;
@@ -72,6 +71,12 @@ public class Transform extends PooledComponent {
 		orientationDisplacement.idt();
 	}
 
+	@Override
+	public String toString() {
+		toDirection(tmpVect2);
+		return "pos=" + currentPos.toString() + ", dir=" + tmpVect2.toString();
+	}
+
 
 	/**
 	 * Sets both desired and current position.
@@ -102,7 +107,7 @@ public class Transform extends PooledComponent {
 
 		// Normally, we would finish this algorithm this way:
 		//   orientation.set(w.x, w.y, w.z, 1f + u.dot(v)).nor();
-		// but direction 0,0,1 is 180 degree to 0,0,-1 ant it breaks.
+		// but direction 0,0,1 is 180 degree to 0,0,-1 and it breaks.
 
 	    float len = w.len2();
 	    float real_part = u.dot(v);
@@ -202,8 +207,13 @@ public class Transform extends PooledComponent {
 		translate(toRightDir(tmpVect3).scl(-length));
 	}
 
-	/** Rotates by the given angle around the given axis, with the axis attached to given point. */
+	/**
+	 * Rotates by the given angle around the given axis, with the axis attached to given point.
+	 *
+	 * @param angle the angle in degrees
+	 */
 	public void rotateAround(Vector3 point, Vector3 axis, float angle) {
+		// TODO something wrong is here, probably
 		tmpVect.set(point);
 		tmpVect.sub(desiredPos);
 		translate(tmpVect);
@@ -212,9 +222,20 @@ public class Transform extends PooledComponent {
 		translate(tmpVect.scl(-1f));
 	}
 
-	/** Rotates by the given angle around the given axis. */
-	public void rotate(Vector3 axis, float angle) {
-		tmpQuat.set(axis, angle);
+	/**
+	 * Rotates by the given angle around the given local axis that
+	 * will be attached to origin ({@link #desiredPos}) point.
+	 *
+	 * @param localAxis axis attached to current orientation
+	 * @param angle the angle in degrees
+	 */
+	public void rotateLocal(Vector3 localAxis, float angle) {
+		tmpQuat.set(localAxis, angle);
 		orientation.mul(tmpQuat);
+	}
+
+	public void rotate(Vector3 globalAxis, float angle) {
+		tmpQuat.set(globalAxis, angle);
+		orientation.mulLeft(tmpQuat);
 	}
 }

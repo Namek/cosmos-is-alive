@@ -1,11 +1,15 @@
 package net.namekdev.cosmos_is_alive.system;
 
+import static se.feomedia.orion.OperationFactory.*;
+import static net.namekdev.cosmos_is_alive.action.base.Operations.*;
 import static net.namekdev.cosmos_is_alive.system.TweenSystem.EntityTweenAccessor.*;
 import static aurelienribon.tweenengine.TweenEquations.*;
 import static com.badlogic.gdx.Gdx.input;
 import net.mostlyoriginal.api.plugin.extendedcomponentmapper.M;
-import net.namekdev.cosmos_is_alive.animation.TemporalDeltaOperation;
-import net.namekdev.cosmos_is_alive.animation.TemporalOperation;
+import net.namekdev.cosmos_is_alive.action.base.TemporalDeltaOperation;
+import net.namekdev.cosmos_is_alive.action.base.TemporalOperation;
+import net.namekdev.cosmos_is_alive.action.base.TemporalDeltaOperation.DeltaExecutor;
+import net.namekdev.cosmos_is_alive.action.base.TemporalOperation.SimpleExecutor;
 import net.namekdev.cosmos_is_alive.component.*;
 import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.component.render.ZOrder;
@@ -26,8 +30,6 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.managers.TagManager;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
@@ -39,7 +41,6 @@ public class PlayerStateSystem extends BaseSystem {
 	CameraSystem cameraSystem;
 	CollisionDetectionSystem collisions;
 	RenderSystem renderSystem;
-	SchedulerSystem scheduler;
 	TagManager tags;
 	TweenSystem tweens;
 
@@ -71,7 +72,7 @@ public class PlayerStateSystem extends BaseSystem {
 		return tags.getEntity(Tags.Player);
 	}
 
-	public Transform getPlayerTransform() {
+	public Transform getShipTransform() {
 		return mTransform.get(getPlayer());
 	}
 
@@ -85,7 +86,7 @@ public class PlayerStateSystem extends BaseSystem {
 		return transform.toDirection(outDir);
 	}
 
-	public Vector3 getShipUpDirection(Vector3 outUp) {
+	public Vector3 getShipUpVector(Vector3 outUp) {
 		Transform transform = mTransform.get(getPlayer());
 		return transform.toUpDir(outUp);
 	}
@@ -95,9 +96,9 @@ public class PlayerStateSystem extends BaseSystem {
 	}
 
 	public boolean tryRotateAroundPlanet(final float byDegrees, final Vector3 axis) {
-		if (nearPlanetId < 0) {
-			return false;
-		}
+//		if (nearPlanetId < 0) {
+//			return false;
+//		}
 
 		animateRotationAroundPlanet(byDegrees, axis);
 		return true;
@@ -106,30 +107,30 @@ public class PlayerStateSystem extends BaseSystem {
 
 	private void animateRotationAroundPlanet(final float byDegrees, final Vector3 axis) {
 		final MixedProjectionCamera camera = cameraSystem.camera;
-		final Transform planetTransform = mTransform.get(nearPlanetId);
-		final Transform shipTransform = getPlayerTransform();
+		final Transform shipTransform = getShipTransform();
+		final Transform planetTransform = null;//mTransform.get(nearPlanetId);
+		final Vector3 point = shipTransform.toUpDir(new Vector3()).scl(-6).add(shipTransform.currentPos);//planetTransform.currentPos
 
-		scheduler.parallel(
-			new TemporalDeltaOperation(Interpolation.sine, C.Camera.RotationDuration) {
-				@Override
-				public void update(float percentageDelta, Entity e) {
-					//camera.rotateAround(point, axis, percentageDelta * byDegrees);
-					//camera.update();
-
-					final float angle = percentageDelta * byDegrees;
-					shipTransform.rotateAround(planetTransform.currentPos, axis, angle);
-				}
-			},
-			new TemporalOperation(Interpolation.sine, C.Camera.RotationDuration) {
-				@Override
-				public void act(float percentage, Entity e) {
-					float p = (percentage <= 0.5f ? percentage : (1f - percentage)) * 2f;
-					camera.perspectiveFactor = MathUtils.lerp(
-						C.Camera.MinPerspective, C.Camera.MaxPerspective, p
-					);
-					camera.update();
-				}
-			}
-		);
+		sequence(
+			parallel(
+				deltaOperation(C.Camera.RotationDuration, Interpolation.sine, new DeltaExecutor() {
+					@Override
+					public void act(float deltaTime, float deltaPercent) {
+						final float angle = deltaPercent * byDegrees;
+						shipTransform.rotateAround(point, axis, angle);
+					}
+				}),
+				temporal(C.Camera.RotationDuration, Interpolation.sine, new SimpleExecutor() {
+					@Override
+					public void act(float deltaTime, float percent, float alpha) {
+						float p = (percent <= 0.5f ? percent : (1f - percent)) * 2f;
+						camera.perspectiveFactor = MathUtils.lerp(
+							C.Camera.MinPerspective, C.Camera.MaxPerspective, p
+						);
+						camera.update();
+					}
+				})
+			)
+		).register(world);
 	}
 }

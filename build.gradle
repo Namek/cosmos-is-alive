@@ -35,6 +35,7 @@ allprojects {
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -95,7 +96,7 @@ project(":html") {
          // Artemis-odb bonus functionality (systems, events, components).
         compile "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion:sources"
         compile "net.mostlyoriginal.artemis-odb:contrib-eventbus:$artemisContribVersion:sources"
-        compile "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion:sources"
+        //compile "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion:sources"
     }
 }
 
@@ -130,7 +131,12 @@ project(":core") {
         // artemis-odb-contrib
         compile "net.mostlyoriginal.artemis-odb:contrib-core:$artemisContribVersion"
         compile "net.mostlyoriginal.artemis-odb:contrib-eventbus:$artemisContribVersion"
-        compile "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion"
+        //compile "net.mostlyoriginal.artemis-odb:contrib-plugin-operations:$artemisContribVersion"
+        
+        // artemis-odb-orion - Operations/Actions mini-DSL for artemis-odb
+        //compile "se.feomedia.orion:artemis-odb-orion:0.1.0-SNAPSHOT"
+        compile "com.github.FEOMedia:artemis-odb-orion:-SNAPSHOT"
+        //compile "com.github.Namek:artemis-odb-orion:-3001b22-1"
         
         // Entity Tracker
         compile "net.namekdev.entity_tracker:artemis-entity-tracker:0.3.0"

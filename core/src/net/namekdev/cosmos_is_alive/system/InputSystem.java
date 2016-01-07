@@ -1,7 +1,7 @@
 package net.namekdev.cosmos_is_alive.system;
 
 import static com.badlogic.gdx.Gdx.input;
-
+import net.namekdev.cosmos_is_alive.component.base.Transform;
 import net.namekdev.cosmos_is_alive.enums.C;
 import net.namekdev.cosmos_is_alive.util.ActionTimer;
 import net.namekdev.cosmos_is_alive.util.ActionTimer.TimerState;
@@ -32,21 +32,23 @@ public class InputSystem extends BaseSystem {
 			float angle = 0;
 			boolean performRotation = true;
 
+			Transform playerTransform = playerSystem.getShipTransform();
+
 			if (input.isKeyJustPressed(Keys.UP)) {
-				angle = 90;
-				cameraSystem.getRightVector(tmpAxis);
+				angle = -90;
+				playerTransform.toRightDir(tmpAxis);
 			}
 			else if (input.isKeyJustPressed(Keys.DOWN)) {
-				angle = -90;
-				cameraSystem.getRightVector(tmpAxis);
+				angle = 90;
+				playerTransform.toRightDir(tmpAxis);
 			}
 			else if (input.isKeyJustPressed(Keys.LEFT)) {
-				angle = 90;
-				cameraSystem.getUpVector(tmpAxis);
+				angle = -90;
+				playerTransform.toDirection(tmpAxis);
 			}
 			else if (input.isKeyJustPressed(Keys.RIGHT)) {
-				angle = -90;
-				cameraSystem.getUpVector(tmpAxis);
+				angle = 90;
+				playerTransform.toDirection(tmpAxis);
 			}
 			else performRotation = false;
 
