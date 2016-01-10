@@ -88,6 +88,10 @@ public class PlayerStateSystem extends BaseSystem {
 		return player;
 	}
 
+	public int getPlayerId() {
+		return player.getId();
+	}
+
 	public Transform getShipTransform() {
 		return mTransform.get(getPlayer());
 	}
@@ -156,10 +160,10 @@ public class PlayerStateSystem extends BaseSystem {
 	private CollisionEnterListener onPlayerCollides = new CollisionEnterListener() {
 		@Override
 		public void onCollisionEnter(int entityId, int otherEntityId) {
-//			if (nearPlanetId < 0) {
+			if (nearPlanetId < 0) {
 				nearPlanetId = otherEntityId;
 				mRenderable.get(otherEntityId).debugFrame = true;
-//			}
+			}
 		}
 	};
 

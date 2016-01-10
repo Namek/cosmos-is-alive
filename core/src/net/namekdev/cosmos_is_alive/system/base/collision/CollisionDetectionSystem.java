@@ -40,7 +40,7 @@ public class CollisionDetectionSystem extends EntitySystem {
 	protected EventSystem events;
 
 	public final CollisionGroupsRelations relations;
-	private final CollisionPhases phases = new CollisionPhases();
+	protected final CollisionPhases phases = new CollisionPhases();
 	protected final Vector3 min = new Vector3(), max = new Vector3();
 	protected final BoundingBox box1 = new BoundingBox(), box2 = new BoundingBox();
 	protected final Circle circle1 = new Circle(), circle2 = new Circle();
@@ -210,7 +210,7 @@ public class CollisionDetectionSystem extends EntitySystem {
 	 * @author Namek
 	 * @todo <b>Pleease</b>, optimizee meee!
 	 */
-	private static class CollisionPhases {
+	public static class CollisionPhases {
 		/** Maps entity1Id to entity2d which maps to phase */
 		private final Map<Integer, Map<Integer, Integer>> collisionPhases = new TreeMap<Integer, Map<Integer, Integer>>();
 

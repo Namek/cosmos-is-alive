@@ -14,10 +14,13 @@ import net.namekdev.cosmos_is_alive.system.base.collision.CollisionDetectionSyst
 @Wire(injectInherited=true)
 public class CollisionSystem extends CollisionDetectionSystem {
 	private CameraSystem cameraSystem;
+	private PlayerStateSystem playerSystem;
 
 	private final Vector3 tmpPos1 = new Vector3(), tmpPos2 = new Vector3();
 	private final Vector3 tmpSize1 = new Vector3(), tmpSize2 = new Vector3();
 
+	private float closestColliderDist = Float.MAX_VALUE;
+	private int closestColliderId = -1;
 
 	@Override
 	public boolean checkOverlap(int entity1Id, Collider collider1, int entity2Id, Collider collider2) {
@@ -64,4 +67,45 @@ public class CollisionSystem extends CollisionDetectionSystem {
 		return overlaps;
 	}
 
+	@Override
+	protected void begin() {
+		closestColliderId = -1;
+	}
+
+	@Override
+	public boolean onCollisionEnter(int entity1Id, Collider collider1, int entity2Id, Collider collider2) {
+		int playerId = playerSystem.getPlayerId();
+
+		if (entity1Id != playerId && entity2Id != playerId) {
+			return false;
+		}
+
+		int playerEntity = playerId == entity1Id ? entity1Id : entity2Id;
+		int otherEntity = playerId != entity1Id ? entity1Id : entity2Id;
+
+		if (checkOverlap(playerEntity, mCollider.get(playerEntity), otherEntity, mCollider.get(otherEntity))) {
+			float distance = mTransform.get(playerEntity).desiredPos
+					.dst(mTransform.get(otherEntity).desiredPos);
+
+			if (distance < closestColliderDist) {
+				closestColliderDist = distance;
+				closestColliderId = otherEntity;
+			}
+		}
+
+		return false;
+	}
+
+	@Override
+	protected void end() {
+		int playerId = playerSystem.getPlayerId();
+
+		if (closestColliderId >= 0) {
+			phases.set(playerId, closestColliderId, ENTERED);
+			super.onCollisionEnter(playerId, mCollider.get(playerId), closestColliderId, mCollider.get(closestColliderId));
+
+			closestColliderId = -1;
+			closestColliderDist = Float.MAX_VALUE;
+		}
+	}
 }
