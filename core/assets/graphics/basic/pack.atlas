@@ -25,10 +25,3 @@ star_fish
   orig: 445, 249
   offset: 0, 0
   index: -1
-stars
-  rotate: false
-  xy: 1383, 239
-  size: 250, 250
-  orig: 250, 250
-  offset: 0, 0
-  index: -1

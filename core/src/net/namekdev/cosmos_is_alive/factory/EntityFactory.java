@@ -17,6 +17,7 @@ import com.artemis.annotations.Wire;
 import com.artemis.managers.TagManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -25,6 +26,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -91,7 +93,7 @@ public class EntityFactory extends PassiveSystem {
 	public void createStars(float mapWidth, float mapHeight, float mapDepth) {
 		Entity stars = null;
 		EntityEdit e = null;
-
+/*
 		// front
 		stars = world.createEntity();
 		e = stars.edit();
@@ -126,7 +128,19 @@ public class EntityFactory extends PassiveSystem {
 		stars = world.createEntity();
 		e = stars.edit();
 		setDecal(e, assets.stars, mapWidth, mapDepth);
-		xyz(e, 0, mapWidth/2, 0).look(0, -1, 0);
+		xyz(e, 0, mapWidth/2, 0).look(0, -1, 0);*/
+
+		stars = world.createEntity();
+		e = stars.edit();
+
+		ModelBuilder mb = new ModelBuilder();
+
+		TextureAttribute texAttr = TextureAttribute.createDiffuse(assets.stars);
+		Material material = new Material(texAttr);
+		Model model = mb.createSphere(mapWidth, mapHeight, mapDepth, 50, 50, material, Usage.Position|Usage.TextureCoordinates|Usage.Normal);
+		model.materials.get(0).set(new IntAttribute(IntAttribute.CullFace, 0));
+		setModel(e, new ModelInstance(model));
+		xyz(e, 0, 0, 0);
 	}
 
 	public Entity createPlanet(float x, float y, float z, float size, float orbitAltitude, TextureRegion texture) {

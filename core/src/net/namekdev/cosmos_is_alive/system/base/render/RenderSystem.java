@@ -142,10 +142,6 @@ public class RenderSystem extends BaseEntitySystem {
 			dirtyOrder = false;
 		}
 
-		Gdx.gl.glClearColor(0, 0, 1, 1f);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-
-
 		lastRenderer = null;
 
 		final long[] metas = sorted.items;

@@ -27,7 +27,7 @@ public class WorldInitManager extends BaseSystem {
 
 
 	private void init() {
-		factory.createStars(C.World.StarBoxSize, C.World.StarBoxSize, C.World.StarBoxSize);
+//		factory.createStars(C.World.StarBoxSize, C.World.StarBoxSize, C.World.StarBoxSize);
 
 		/*
 		Entity planet = factory.createPlanet(4, 0, -10, 10, 2, assets.planetSaturn);
