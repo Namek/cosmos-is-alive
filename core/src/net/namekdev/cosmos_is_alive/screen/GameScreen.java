@@ -44,7 +44,7 @@ public class GameScreen extends BaseScreen<GameScreen> {
 
 		WorldConfiguration cfg = new WorldConfigurationBuilder()
 //			.with(new EntityTracker(entityTrackerServer))
-//			.with(new EntityTracker(new EntityTrackerMainWindow()))
+			.with(new EntityTracker(new EntityTrackerMainWindow()))
 			.with(new AspectHelpers())
 			.with(new EntityFactory())
 			.with(new WorldInitManager())

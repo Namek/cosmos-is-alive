@@ -90,31 +90,34 @@ public class CollisionDetectionSystem extends EntitySystem {
 				int entity2Id = ids[j];
 				Collider collider2 = mCollider.get(entity2Id);
 
-				int phase = phases.get(entity1Id, entity2Id);
+				processPair(entity1Id, collider1, entity2Id, collider2);
+			}
+		}
+	}
 
-				if (phase == NONE) {
-					if (!relations.anyRelationExists(collider1.groups, collider2.groups)) {
-						continue;
-					}
+	protected void processPair(int entity1Id, Collider collider1, int entity2Id, Collider collider2) {
+		int phase = phases.get(entity1Id, entity2Id);
 
-					if (checkOverlap(entity1Id, collider1, entity2Id, collider2)) {
-						onCollisionEnter(entity1Id, collider1, entity2Id, collider2);
+		if (phase == EXISTING) {
+			if (!checkOverlap(entity1Id, collider1, entity2Id, collider2)) {
+				phases.set(entity1Id, entity2Id, NONE);
+				onCollisionExit(entity1Id, collider1, entity2Id, collider2);
+			}
+		}
+		else if (phase == ENTERED) {
+			if (!checkOverlap(entity1Id, collider1, entity2Id, collider2)) {
+				phases.set(entity1Id, entity2Id, NONE);
+				onCollisionExit(entity1Id, collider1, entity2Id, collider2);
+			}
+			else {
+				phases.set(entity1Id, entity2Id, EXISTING);
+			}
+		}
+		else if (phase == NONE) {
+			if (relations.anyRelationExists(collider1.groups, collider2.groups)) {
+				if (checkOverlap(entity1Id, collider1, entity2Id, collider2)) {
+					if (onCollisionEnter(entity1Id, collider1, entity2Id, collider2)) {
 						phases.set(entity1Id, entity2Id, ENTERED);
-					}
-				}
-				else if (phase == EXISTING) {
-					if (!checkOverlap(entity1Id, collider1, entity2Id, collider2)) {
-						phases.set(entity1Id, entity2Id, NONE);
-						onCollisionExit(entity1Id, collider1, entity2Id, collider2);
-					}
-				}
-				else if (phase == ENTERED) {
-					if (!checkOverlap(entity1Id, collider1, entity2Id, collider2)) {
-						phases.set(entity1Id, entity2Id, NONE);
-						onCollisionExit(entity1Id, collider1, entity2Id, collider2);
-					}
-					else {
-						phases.set(entity1Id, entity2Id, EXISTING);
 					}
 				}
 			}
@@ -149,7 +152,6 @@ public class CollisionDetectionSystem extends EntitySystem {
 		if (collider1.colliderType == collider2.colliderType) {
 			switch (collider1.colliderType) {
 				case BOUNDING_BOX: overlaps = box1.intersects(box2);	break;
-//				case CIRCLE: overlaps =
 			}
 		}
 		else {
@@ -170,7 +172,7 @@ public class CollisionDetectionSystem extends EntitySystem {
 		phases.clear(entity.getId());
 	}
 
-	public void onCollisionEnter(int entity1Id, Collider collider1, int entity2Id, Collider collider2) {
+	public boolean onCollisionEnter(int entity1Id, Collider collider1, int entity2Id, Collider collider2) {
 		if (collider1.enterListener != null) {
 			collider1.enterListener.onCollisionEnter(entity1Id, entity2Id);
 		}
@@ -183,6 +185,8 @@ public class CollisionDetectionSystem extends EntitySystem {
 			events.dispatch(CollisionEvent.class)
 				.setup(entity1Id, entity2Id, CollisionEvent.ENTER);
 		}
+
+		return true;
 	}
 
 	public void onCollisionExit(int entity1Id, Collider collider1, int entity2Id, Collider collider2) {

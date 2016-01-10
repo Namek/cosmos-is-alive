@@ -92,6 +92,7 @@ public class CameraSystem extends BaseSystem {
 			if (playerSystem.isPlayerAlive()) {
 				playerSystem.getShipUpVector(tmpDir);
 				tmpDist.set(tmpDir).scl(C.Camera.DistanceToPlayer);
+				camera.zoom = C.Camera.OrthoZoom;
 				playerSystem.getShipPosition(tmpPos);
 				camera.position.set(tmpPos).add(tmpDist);
 				camera.lookAt(tmpPos);;
@@ -138,9 +139,17 @@ public class CameraSystem extends BaseSystem {
 		w.set(tmpScreenPos.x, tmpScreenPos.y);
 	}
 
+	public void worldToScreen(Vector3 w) {
+		camera.project(w);
+	}
+
 	public void screenToWorld(Vector2 s) {
 		camera.unproject(tmpScreenPos.set(s.x, s.y, 0));
 		s.set(tmpScreenPos.x, tmpScreenPos.y);
+	}
+
+	public void screenToWorld(Vector3 s) {
+		camera.unproject(s);
 	}
 
 	public void shake(float duration) {

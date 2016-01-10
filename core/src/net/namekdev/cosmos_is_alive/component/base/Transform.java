@@ -69,6 +69,7 @@ public class Transform extends PooledComponent {
 		displacement.setZero();
 		orientation.idt();
 		orientationDisplacement.idt();
+		assetRotation.idt();
 	}
 
 	@Override
@@ -139,8 +140,8 @@ public class Transform extends PooledComponent {
 	}
 
 	/**
-	 * Gets {@link #currentPos}, {@link #direction} and {@link #up} into given Matrix.
-	 * Ignores {@link #displacement} and @{link #visualOrientation}.
+	 * Gets {@link #currentPos} and {@link #orientation} into given Matrix.
+	 * Ignores {@link #displacement} and @{link #orientationDisplacement}.
 	 */
 	public Matrix4 toMatrix4(Matrix4 mat) {
 		orientation.toMatrix(mat.val);

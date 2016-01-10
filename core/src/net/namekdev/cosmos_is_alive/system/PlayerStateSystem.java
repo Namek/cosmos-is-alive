@@ -12,11 +12,14 @@ import net.namekdev.cosmos_is_alive.action.base.TemporalDeltaOperation.DeltaExec
 import net.namekdev.cosmos_is_alive.action.base.TemporalOperation.SimpleExecutor;
 import net.namekdev.cosmos_is_alive.component.*;
 import net.namekdev.cosmos_is_alive.component.base.Transform;
+import net.namekdev.cosmos_is_alive.component.render.Renderable;
 import net.namekdev.cosmos_is_alive.component.render.ZOrder;
 import net.namekdev.cosmos_is_alive.enums.C;
 import net.namekdev.cosmos_is_alive.enums.Tags;
 import net.namekdev.cosmos_is_alive.manager.AspectHelpers;
-import net.namekdev.cosmos_is_alive.system.base.collision.CollisionDetectionSystem;
+import net.namekdev.cosmos_is_alive.system.base.collision.Collider;
+import net.namekdev.cosmos_is_alive.system.base.collision.messaging.CollisionEnterListener;
+import net.namekdev.cosmos_is_alive.system.base.collision.messaging.CollisionExitListener;
 import net.namekdev.cosmos_is_alive.system.base.render.RenderSystem;
 import net.namekdev.cosmos_is_alive.util.ActionTimer;
 import net.namekdev.cosmos_is_alive.util.ActionTimer.TimerState;
@@ -35,28 +38,33 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector3;
 
 public class PlayerStateSystem extends BaseSystem {
+	ComponentMapper<Renderable> mRenderable;
 	ComponentMapper<Transform> mTransform;
 
 	AspectHelpers aspects;
 	CameraSystem cameraSystem;
-	CollisionDetectionSystem collisions;
+	CollisionSystem collisions;
 	RenderSystem renderSystem;
 	TagManager tags;
 	TweenSystem tweens;
 
+	private Entity player;
 	private final Vector3 dir = new Vector3();
 
 	private int nearPlanetId = -1;
 
 
-	@Override
-	protected void initialize() {
+	public void setPlayer(Entity player) {
+		this.player = player;
+		Collider collider = player.getComponent(Collider.class);
+		collider.enterListener = onPlayerCollides;
+		collider.exitListener = onPlayerExitsCollision;
 	}
 
 	@Override
 	protected void processSystem() {
 		float dt = world.getDelta();
-		final Entity e = tags.getEntity(Tags.Player);
+		final Entity e = this.player;
 		Transform transform = mTransform.get(e);
 
 
@@ -66,10 +74,18 @@ public class PlayerStateSystem extends BaseSystem {
 			}
 //			else if (input.isKeyPressed(Keys.A))
 		}
+
+		if (input.isKeyJustPressed(Keys.V)) {
+			if (nearPlanetId >= 0) {
+				mRenderable.get(nearPlanetId).debugFrame = false;
+			}
+
+			nearPlanetId = -1;
+		}
 	}
 
 	public Entity getPlayer() {
-		return tags.getEntity(Tags.Player);
+		return player;
 	}
 
 	public Transform getShipTransform() {
@@ -96,9 +112,9 @@ public class PlayerStateSystem extends BaseSystem {
 	}
 
 	public boolean tryRotateAroundPlanet(final float byDegrees, final Vector3 axis) {
-//		if (nearPlanetId < 0) {
-//			return false;
-//		}
+		if (nearPlanetId < 0) {
+			return false;
+		}
 
 		animateRotationAroundPlanet(byDegrees, axis);
 		return true;
@@ -108,10 +124,12 @@ public class PlayerStateSystem extends BaseSystem {
 	private void animateRotationAroundPlanet(final float byDegrees, final Vector3 axis) {
 		final MixedProjectionCamera camera = cameraSystem.camera;
 		final Transform shipTransform = getShipTransform();
-		final Transform planetTransform = null;//mTransform.get(nearPlanetId);
-		final Vector3 point = shipTransform.toUpDir(new Vector3()).scl(-6).add(shipTransform.currentPos);//planetTransform.currentPos
+		final Transform planetTransform = mTransform.get(nearPlanetId);
+//		final Vector3 point = shipTransform.toUpDir(new Vector3()).scl(-6).add(shipTransform.currentPos);//planetTransform.currentPos
+		final Vector3 point = planetTransform.currentPos;
 
 		sequence(
+			disableSystem(CollisionSystem.class),
 			parallel(
 				deltaOperation(C.Camera.RotationDuration, Interpolation.sine, new DeltaExecutor() {
 					@Override
@@ -130,7 +148,29 @@ public class PlayerStateSystem extends BaseSystem {
 						camera.update();
 					}
 				})
-			)
+			),
+			enableSystem(CollisionSystem.class)
 		).register(world);
 	}
+
+	private CollisionEnterListener onPlayerCollides = new CollisionEnterListener() {
+		@Override
+		public void onCollisionEnter(int entityId, int otherEntityId) {
+//			if (nearPlanetId < 0) {
+				nearPlanetId = otherEntityId;
+				mRenderable.get(otherEntityId).debugFrame = true;
+//			}
+		}
+	};
+
+	private CollisionExitListener onPlayerExitsCollision = new CollisionExitListener() {
+		@Override
+		public void onCollisionExit(int entityId, int otherEntityId) {
+			mRenderable.get(otherEntityId).debugFrame = false;
+
+			if (otherEntityId == nearPlanetId) {
+				nearPlanetId = -1;
+			}
+		}
+	};
 }

@@ -2,8 +2,11 @@ package net.namekdev.cosmos_is_alive.manager;
 
 import net.namekdev.cosmos_is_alive.Assets;
 import net.namekdev.cosmos_is_alive.enums.C;
+import net.namekdev.cosmos_is_alive.enums.CollisionGroups;
 import net.namekdev.cosmos_is_alive.factory.EntityFactory;
 import net.namekdev.cosmos_is_alive.factory.PlanetLayoutGenerator;
+import net.namekdev.cosmos_is_alive.system.CollisionSystem;
+import net.namekdev.cosmos_is_alive.system.PlayerStateSystem;
 
 import com.artemis.BaseSystem;
 import com.artemis.Entity;
@@ -13,7 +16,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 
 public class WorldInitManager extends BaseSystem {
+	CollisionSystem collisions;
 	EntityFactory factory;
+	PlayerStateSystem playerSystem;
 	TagManager tags;
 
 	@Wire Assets assets;
@@ -65,7 +70,10 @@ public class WorldInitManager extends BaseSystem {
 			}
 		}
 
-		factory.createPlayerShip(0, 0, 5);
+		Entity player = factory.createPlayerShip(0, 0, 5);
+		playerSystem.setPlayer(player);
+
+		collisions.relations.connectGroups(CollisionGroups.PLAYER_2D, CollisionGroups.PLANETS_2D);
 	}
 
 	@Override

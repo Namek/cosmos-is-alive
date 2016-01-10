@@ -52,4 +52,12 @@ public class OrbitSystem extends EntityProcessingSystem {
 			.add(orbiterTransform.currentPos);
 		transform.xyz(pos);
 	}
+
+	public void startOrbitting(int orbiterId, int orbitId) {
+		mOrbiter.create(orbiterId).orbitEntityId = orbitId;
+	}
+
+	public void stopOrbitting(int e) {
+		mOrbiter.remove(e);
+	}
 }
